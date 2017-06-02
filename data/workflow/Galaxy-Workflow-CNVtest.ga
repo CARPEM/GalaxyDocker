@@ -1,0 +1,107 @@
+{
+    "a_galaxy_workflow": "true", 
+    "annotation": "a test for bioblend", 
+    "format-version": "0.1", 
+    "name": "CNVtest", 
+    "steps": {
+        "0": {
+            "annotation": "fo bioblends", 
+            "content_id": null, 
+            "id": 0, 
+            "input_connections": {}, 
+            "inputs": [
+                {
+                    "description": "fo bioblends", 
+                    "name": "bcmat"
+                }
+            ], 
+            "label": null, 
+            "name": "Input dataset", 
+            "outputs": [], 
+            "position": {
+                "left": 200, 
+                "top": 276.25
+            }, 
+            "tool_errors": null, 
+            "tool_id": null, 
+            "tool_state": "{\"name\": \"bcmat\"}", 
+            "tool_version": null, 
+            "type": "data_input", 
+            "uuid": "7c055fe2-2cd6-4fd6-a19e-67b2ed1ec987", 
+            "workflow_outputs": []
+        }, 
+        "1": {
+            "annotation": "specified inpput for bioblends", 
+            "content_id": null, 
+            "id": 1, 
+            "input_connections": {}, 
+            "inputs": [
+                {
+                    "description": "specified inpput for bioblends", 
+                    "name": "bcsummary"
+                }
+            ], 
+            "label": null, 
+            "name": "Input dataset", 
+            "outputs": [], 
+            "position": {
+                "left": 195, 
+                "top": 366.25
+            }, 
+            "tool_errors": null, 
+            "tool_id": null, 
+            "tool_state": "{\"name\": \"bcsummary\"}", 
+            "tool_version": null, 
+            "type": "data_input", 
+            "uuid": "4de9eae0-67ce-427e-8a83-8280b063dce9", 
+            "workflow_outputs": []
+        }, 
+        "2": {
+            "annotation": "you know nothing jon snow", 
+            "content_id": "copy_number_WDGN", 
+            "id": 2, 
+            "input_connections": {
+                "ampliconsinput": {
+                    "id": 1, 
+                    "output_name": "output"
+                }, 
+                "bcmatrixinput": {
+                    "id": 0, 
+                    "output_name": "output"
+                }
+            }, 
+            "inputs": [], 
+            "label": null, 
+            "name": "Copy number analysis", 
+            "outputs": [
+                {
+                    "name": "result", 
+                    "type": "xlsx"
+                }, 
+                {
+                    "name": "pdffile", 
+                    "type": "pdf"
+                }
+            ], 
+            "position": {
+                "left": 535, 
+                "top": 322.25
+            }, 
+            "post_job_actions": {
+                "EmailActionresult": {
+                    "action_arguments": {}, 
+                    "action_type": "EmailAction", 
+                    "output_name": "result"
+                }
+            }, 
+            "tool_errors": null, 
+            "tool_id": "copy_number_WDGN", 
+            "tool_state": "{\"__page__\": 0, \"ampliconsinput\": \"null\", \"__rerun_remap_job_id__\": null, \"bcmatrixinput\": \"null\"}", 
+            "tool_version": "1.0", 
+            "type": "tool", 
+            "uuid": "6b76b7f7-a859-4072-aba2-600d79aba81c", 
+            "workflow_outputs": []
+        }
+    }, 
+    "uuid": "93acd03a-7f39-4cae-a287-1d00839bb485"
+}

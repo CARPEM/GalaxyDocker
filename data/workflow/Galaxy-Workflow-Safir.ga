@@ -1,0 +1,77 @@
+{
+    "a_galaxy_workflow": "true", 
+    "annotation": "", 
+    "format-version": "0.1", 
+    "name": "Safir", 
+    "steps": {
+        "0": {
+            "annotation": "", 
+            "content_id": null, 
+            "id": 0, 
+            "input_connections": {}, 
+            "inputs": [
+                {
+                    "description": "", 
+                    "name": "InputSafir vcf or xls"
+                }
+            ], 
+            "label": null, 
+            "name": "Input dataset", 
+            "outputs": [], 
+            "position": {
+                "left": 112.75, 
+                "top": 242.25
+            }, 
+            "tool_errors": null, 
+            "tool_id": null, 
+            "tool_state": "{\"name\": \"InputSafir vcf or xls\"}", 
+            "tool_version": null, 
+            "type": "data_input", 
+            "uuid": "80997e3e-24d6-47e1-b584-e86c7ac3aa2b", 
+            "workflow_outputs": []
+        }, 
+        "1": {
+            "annotation": "", 
+            "content_id": "create_safir", 
+            "id": 1, 
+            "input_connections": {
+                "tabinput": {
+                    "id": 0, 
+                    "output_name": "output"
+                }
+            }, 
+            "inputs": [], 
+            "label": null, 
+            "name": "Annotation - Safir2 report tool", 
+            "outputs": [
+                {
+                    "name": "output", 
+                    "type": "xls"
+                }, 
+                {
+                    "name": "output2", 
+                    "type": "txt"
+                }
+            ], 
+            "position": {
+                "left": 388.75, 
+                "top": 245.25
+            }, 
+            "post_job_actions": {
+                "EmailActionoutput": {
+                    "action_arguments": {}, 
+                    "action_type": "EmailAction", 
+                    "output_name": "output"
+                }
+            }, 
+            "tool_errors": null, 
+            "tool_id": "create_safir", 
+            "tool_state": "{\"__page__\": 0, \"__rerun_remap_job_id__\": null, \"tabinput\": \"null\"}", 
+            "tool_version": "1.0.0", 
+            "type": "tool", 
+            "uuid": "a626c28c-8875-477d-80a0-2b9daa1b2e83", 
+            "workflow_outputs": []
+        }
+    }, 
+    "uuid": "6553d64c-2d29-4788-b759-1f0abcbe07bc"
+}

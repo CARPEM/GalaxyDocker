@@ -1,0 +1,29 @@
+\indexentry{datamanagerpkg.\_\_init\_\_ (module)|hyperpage}{3}
+\indexentry{grou() (in module datamanagerpkg.\_\_init\_\_)|hyperpage}{3}
+\indexentry{datamanagerpkg.GalaxyCommunication\_data\_manager (module)|hyperpage}{3}
+\indexentry{CNV\_Input\_Dict() (in module datamanagerpkg.GalaxyCommunication\_data\_manager)|hyperpage}{3}
+\indexentry{Create\_History() (in module datamanagerpkg.GalaxyCommunication\_data\_manager)|hyperpage}{3}
+\indexentry{Run\_CNV\_Workflow() (in module datamanagerpkg.GalaxyCommunication\_data\_manager)|hyperpage}{4}
+\indexentry{addAllWorkflow() (in module datamanagerpkg.GalaxyCommunication\_data\_manager)|hyperpage}{4}
+\indexentry{createUserApikey() (in module datamanagerpkg.GalaxyCommunication\_data\_manager)|hyperpage}{4}
+\indexentry{galaxyConnection() (in module datamanagerpkg.GalaxyCommunication\_data\_manager)|hyperpage}{5}
+\indexentry{mainCNV() (in module datamanagerpkg.GalaxyCommunication\_data\_manager)|hyperpage}{5}
+\indexentry{returnGalaxyUsers() (in module datamanagerpkg.GalaxyCommunication\_data\_manager)|hyperpage}{5}
+\indexentry{upload\_To\_History\_CNV() (in module datamanagerpkg.GalaxyCommunication\_data\_manager)|hyperpage}{6}
+\indexentry{datamanagerpkg.Main\_data\_manager (module)|hyperpage}{6}
+\indexentry{datamanagerpkg.ProtonCommunication\_data\_manager (module)|hyperpage}{6}
+\indexentry{CheckExperiments() (in module datamanagerpkg.ProtonCommunication\_data\_manager)|hyperpage}{6}
+\indexentry{CheckResConsistency() (in module datamanagerpkg.ProtonCommunication\_data\_manager)|hyperpage}{7}
+\indexentry{CheckResultsConsistency() (in module datamanagerpkg.ProtonCommunication\_data\_manager)|hyperpage}{7}
+\indexentry{FindResults() (in module datamanagerpkg.ProtonCommunication\_data\_manager)|hyperpage}{8}
+\indexentry{QueryResults() (in module datamanagerpkg.ProtonCommunication\_data\_manager)|hyperpage}{8}
+\indexentry{copyData() (in module datamanagerpkg.ProtonCommunication\_data\_manager)|hyperpage}{9}
+\indexentry{mainGetCNVData() (in module datamanagerpkg.ProtonCommunication\_data\_manager)|hyperpage}{9}
+\indexentry{sshConnection() (in module datamanagerpkg.ProtonCommunication\_data\_manager)|hyperpage}{9}
+\indexentry{datamanagerpkg.addWorkflow (module)|hyperpage}{10}
+\indexentry{CNV\_Input\_Dict() (in module datamanagerpkg.addWorkflow)|hyperpage}{10}
+\indexentry{Create\_History() (in module datamanagerpkg.addWorkflow)|hyperpage}{10}
+\indexentry{Run\_CNV\_Workflow() (in module datamanagerpkg.addWorkflow)|hyperpage}{10}
+\indexentry{addAllWorkflow() (in module datamanagerpkg.addWorkflow)|hyperpage}{10}
+\indexentry{mainCNV() (in module datamanagerpkg.addWorkflow)|hyperpage}{10}
+\indexentry{upload\_To\_History() (in module datamanagerpkg.addWorkflow)|hyperpage}{10}

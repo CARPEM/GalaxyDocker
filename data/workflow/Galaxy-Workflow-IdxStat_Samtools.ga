@@ -1,0 +1,67 @@
+{
+    "a_galaxy_workflow": "true", 
+    "annotation": "test workflow", 
+    "format-version": "0.1", 
+    "name": "IdxStat Samtools", 
+    "steps": {
+        "0": {
+            "annotation": "", 
+            "content_id": null, 
+            "id": 0, 
+            "input_connections": {}, 
+            "inputs": [
+                {
+                    "description": "", 
+                    "name": "inputBam"
+                }
+            ], 
+            "label": null, 
+            "name": "Input dataset", 
+            "outputs": [], 
+            "position": {
+                "left": 200, 
+                "top": 200
+            }, 
+            "tool_errors": null, 
+            "tool_id": null, 
+            "tool_state": "{\"name\": \"inputBam\"}", 
+            "tool_version": null, 
+            "type": "data_input", 
+            "uuid": "315a9519-d726-4e81-a10b-45d7b22be6db", 
+            "workflow_outputs": []
+        }, 
+        "1": {
+            "annotation": "ouptut a Tabular file", 
+            "content_id": "samtools_idxstats", 
+            "id": 1, 
+            "input_connections": {
+                "input": {
+                    "id": 0, 
+                    "output_name": "output"
+                }
+            }, 
+            "inputs": [], 
+            "label": null, 
+            "name": "IdxStats", 
+            "outputs": [
+                {
+                    "name": "output", 
+                    "type": "tabular"
+                }
+            ], 
+            "position": {
+                "left": 428, 
+                "top": 200
+            }, 
+            "post_job_actions": {}, 
+            "tool_errors": null, 
+            "tool_id": "samtools_idxstats", 
+            "tool_state": "{\"input\": \"null\", \"__rerun_remap_job_id__\": null, \"__page__\": 0}", 
+            "tool_version": "2.0", 
+            "type": "tool", 
+            "uuid": "fbbb3c7f-c36b-44d6-8635-f8baa8bdb910", 
+            "workflow_outputs": []
+        }
+    }, 
+    "uuid": "98c7dc98-fe95-4466-9cea-66abc521e6ad"
+}

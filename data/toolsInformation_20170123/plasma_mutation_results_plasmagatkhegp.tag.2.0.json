@@ -1,0 +1,147 @@
+{
+    "accessibility": "private", 
+    "topic": [
+        {
+            "term": "Topic", 
+            "uri": "http://edamontology.org/topic_0003"
+        }
+    ], 
+    "platform": [
+        {
+            "term": "Linux"
+        }
+    ], 
+    "version": "plasmagatkhegp.tag.2.0", 
+    "homepage": "http//mygalaxyserver", 
+    "function": [
+        {
+            "output": [
+                {
+                    "dataType": {
+                        "term": "Data", 
+                        "uri": "http://edamontology.org/data_0006"
+                    }, 
+                    "dataHandle": "txt", 
+                    "dataFormat": [
+                        {
+                            "term": "Format", 
+                            "uri": "http://edamontology.org/format_2330"
+                        }
+                    ], 
+                    "dataDescription": "boxplot"
+                }, 
+                {
+                    "dataType": {
+                        "term": "Data", 
+                        "uri": "http://edamontology.org/data_0006"
+                    }, 
+                    "dataHandle": "txt", 
+                    "dataFormat": [
+                        {
+                            "term": "Format", 
+                            "uri": "http://edamontology.org/format_2330"
+                        }
+                    ], 
+                    "dataDescription": "infos"
+                }, 
+                {
+                    "dataType": {
+                        "term": "Data", 
+                        "uri": "http://edamontology.org/data_0006"
+                    }, 
+                    "dataHandle": "txt", 
+                    "dataFormat": [
+                        {
+                            "term": "Format", 
+                            "uri": "http://edamontology.org/format_2330"
+                        }
+                    ], 
+                    "dataDescription": "baioutput"
+                }, 
+                {
+                    "dataType": {
+                        "term": "Data", 
+                        "uri": "http://edamontology.org/data_0006"
+                    }, 
+                    "dataHandle": "pdf", 
+                    "dataFormat": [
+                        {
+                            "term": "Format", 
+                            "uri": "http://edamontology.org/format_3508"
+                        }
+                    ], 
+                    "dataDescription": "imageput"
+                }
+            ], 
+            "functionName": [
+                {
+                    "term": "Operation", 
+                    "uri": "http://edamontology.org/operation_0004"
+                }
+            ], 
+            "functionHandle": "functionHandle", 
+            "functionDescription": "Analyse R des bams recalibr\u00e9s", 
+            "input": [
+                {
+                    "dataType": {
+                        "term": "Data", 
+                        "uri": "WARNING, NO EDAM DATA (or Several)"
+                    }, 
+                    "dataHandle": "bam", 
+                    "dataFormat": [
+                        {
+                            "term": "Format", 
+                            "uri": "http://edamontology.org/format_2572"
+                        }
+                    ], 
+                    "dataDescription": "baminput"
+                }, 
+                {
+                    "dataType": {
+                        "term": "Data", 
+                        "uri": "WARNING, NO EDAM DATA (or Several)"
+                    }, 
+                    "dataHandle": "txt", 
+                    "dataFormat": [
+                        {
+                            "term": "Format", 
+                            "uri": "http://edamontology.org/format_2330"
+                        }
+                    ], 
+                    "dataDescription": "bamfilename"
+                }
+            ]
+        }
+    ], 
+    "description": "Analyse R des bams recalibr\u00e9s.", 
+    "collection": [
+        "ressource"
+    ], 
+    "uses": [
+        {
+            "usesHomepage": "conf.galaxy_url/root?id=plasma_mutation_results", 
+            "usesName": "plasma_mutation_results", 
+            "usesVersion": "plasmagatkhegp.tag.2.0"
+        }
+    ], 
+    "interface": [
+        {
+            "interfaceType": "Web UI"
+        }
+    ], 
+    "sourceRegistry": "https://", 
+    "name": "plasma_mutation_results", 
+    "resourceType": [
+        "Tool"
+    ], 
+    "maturity": "Stable", 
+    "contact": [
+        {
+            "contactEmail": "william.digan@myemail", 
+            "contactName": "william"
+        }
+    ], 
+    "publications": {
+        "publicationsPrimaryID": "None"
+    }
+}

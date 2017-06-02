@@ -1,0 +1,181 @@
+{
+    "a_galaxy_workflow": "true", 
+    "annotation": "plasma workflow to generates all the data", 
+    "format-version": "0.1", 
+    "name": "Plasma_mutation", 
+    "steps": {
+        "0": {
+            "annotation": "", 
+            "content_id": null, 
+            "id": 0, 
+            "input_connections": {}, 
+            "inputs": [
+                {
+                    "description": "", 
+                    "name": "plasmabam"
+                }
+            ], 
+            "label": null, 
+            "name": "Input dataset", 
+            "outputs": [], 
+            "position": {
+                "left": 242.06666564941406, 
+                "top": 267.25
+            }, 
+            "tool_errors": null, 
+            "tool_id": null, 
+            "tool_state": "{\"name\": \"plasmabam\"}", 
+            "tool_version": null, 
+            "type": "data_input", 
+            "uuid": "fa14b71c-7dbb-4c0c-8661-6d95f18c9a71", 
+            "workflow_outputs": [
+                {
+                    "label": null, 
+                    "output_name": "output", 
+                    "uuid": "2267a0ef-0db8-4b5a-81a6-6fc8de2314b7"
+                }
+            ]
+        }, 
+        "1": {
+            "annotation": "", 
+            "content_id": null, 
+            "id": 1, 
+            "input_connections": {}, 
+            "inputs": [
+                {
+                    "description": "", 
+                    "name": "filenameinput"
+                }
+            ], 
+            "label": null, 
+            "name": "Input dataset", 
+            "outputs": [], 
+            "position": {
+                "left": 200.00001525878906, 
+                "top": 513.933349609375
+            }, 
+            "tool_errors": null, 
+            "tool_id": null, 
+            "tool_state": "{\"name\": \"filenameinput\"}", 
+            "tool_version": null, 
+            "type": "data_input", 
+            "uuid": "fc93163c-54ab-45d0-92c3-68fdcb8bcb63", 
+            "workflow_outputs": []
+        }, 
+        "2": {
+            "annotation": "", 
+            "content_id": "plasma_mutation", 
+            "id": 2, 
+            "input_connections": {
+                "baminput": {
+                    "id": 0, 
+                    "output_name": "output"
+                }
+            }, 
+            "inputs": [], 
+            "label": null, 
+            "name": "plasma Mutation \u00e9tape 1", 
+            "outputs": [
+                {
+                    "name": "bamoutput", 
+                    "type": "bam"
+                }
+            ], 
+            "position": {
+                "left": 616.3166656494141, 
+                "top": 200
+            }, 
+            "post_job_actions": {
+                "DeleteIntermediatesActionbamoutput": {
+                    "action_arguments": {}, 
+                    "action_type": "DeleteIntermediatesAction", 
+                    "output_name": "bamoutput"
+                }
+            }, 
+            "tool_errors": null, 
+            "tool_id": "plasma_mutation", 
+            "tool_state": "{\"__page__\": 0, \"__rerun_remap_job_id__\": null, \"baminput\": \"null\"}", 
+            "tool_version": "plasmagatkhegp.tag.1.0", 
+            "type": "tool", 
+            "uuid": "8c9bc2ee-51af-4a25-8ba2-b8dc214646c1", 
+            "workflow_outputs": [
+                {
+                    "label": null, 
+                    "output_name": "bamoutput", 
+                    "uuid": "e2f5a2dd-2bb5-43f0-aaa0-9907db3a14c7"
+                }
+            ]
+        }, 
+        "3": {
+            "annotation": "", 
+            "content_id": "plasma_mutation_results", 
+            "id": 3, 
+            "input_connections": {
+                "bamfilename": {
+                    "id": 1, 
+                    "output_name": "output"
+                }, 
+                "baminput": {
+                    "id": 2, 
+                    "output_name": "bamoutput"
+                }
+            }, 
+            "inputs": [], 
+            "label": null, 
+            "name": "Plasma Mutation \u00e9tape 2", 
+            "outputs": [
+                {
+                    "name": "boxplot", 
+                    "type": "txt"
+                }, 
+                {
+                    "name": "infos", 
+                    "type": "txt"
+                }, 
+                {
+                    "name": "baioutput", 
+                    "type": "txt"
+                }, 
+                {
+                    "name": "imageput", 
+                    "type": "pdf"
+                }
+            ], 
+            "position": {
+                "left": 1155.316665649414, 
+                "top": 441
+            }, 
+            "post_job_actions": {
+                "HideDatasetActionboxplot": {
+                    "action_arguments": {}, 
+                    "action_type": "HideDatasetAction", 
+                    "output_name": "boxplot"
+                }
+            }, 
+            "tool_errors": null, 
+            "tool_id": "plasma_mutation_results", 
+            "tool_state": "{\"bamfilename\": \"null\", \"__rerun_remap_job_id__\": null, \"baminput\": \"null\", \"__page__\": 0}", 
+            "tool_version": "plasmagatkhegp.tag.2.0", 
+            "type": "tool", 
+            "uuid": "6e3f0b03-481d-4c8e-af60-545f2834bae3", 
+            "workflow_outputs": [
+                {
+                    "label": null, 
+                    "output_name": "imageput", 
+                    "uuid": "37d62855-fd05-4338-aadc-8f8fe79b5ff9"
+                }, 
+                {
+                    "label": null, 
+                    "output_name": "baioutput", 
+                    "uuid": "d63668af-8dbe-4b58-b671-d8e2e0a0812c"
+                }, 
+                {
+                    "label": null, 
+                    "output_name": "infos", 
+                    "uuid": "b6b7adb1-82ab-4bec-96b6-99eccd203ee4"
+                }
+            ]
+        }
+    }, 
+    "uuid": "b50d66f2-8e2a-4bf6-9fb4-36bcb08069d4"
+}

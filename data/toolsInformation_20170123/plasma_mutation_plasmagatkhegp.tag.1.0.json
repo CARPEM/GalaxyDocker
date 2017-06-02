@@ -1,0 +1,91 @@
+{
+    "accessibility": "private", 
+    "topic": [
+        {
+            "term": "Topic", 
+            "uri": "http://edamontology.org/topic_0003"
+        }
+    ], 
+    "platform": [
+        {
+            "term": "Linux"
+        }
+    ], 
+    "version": "plasmagatkhegp.tag.1.0", 
+    "homepage": "http://mygalayserver",
+    "function": [
+        {
+            "output": [
+                {
+                    "dataType": {
+                        "term": "Data", 
+                        "uri": "http://edamontology.org/data_0924"
+                    }, 
+                    "dataHandle": "bam", 
+                    "dataFormat": [
+                        {
+                            "term": "Format", 
+                            "uri": "http://edamontology.org/format_2572"
+                        }
+                    ], 
+                    "dataDescription": "bamoutput"
+                }
+            ], 
+            "functionName": [
+                {
+                    "term": "Operation", 
+                    "uri": "http://edamontology.org/operation_0004"
+                }
+            ], 
+            "functionHandle": "functionHandle", 
+            "functionDescription": "Recalibration des fichiers BAM plasmatiques", 
+            "input": [
+                {
+                    "dataType": {
+                        "term": "Data", 
+                        "uri": "WARNING, NO EDAM DATA (or Several)"
+                    }, 
+                    "dataHandle": "bam", 
+                    "dataFormat": [
+                        {
+                            "term": "Format", 
+                            "uri": "http://edamontology.org/format_2572"
+                        }
+                    ], 
+                    "dataDescription": "baminput"
+                }
+            ]
+        }
+    ], 
+    "description": "Recalibration des fichiers BAM plasmatiques.", 
+    "collection": [
+        "ressource"
+    ], 
+    "uses": [
+        {
+            "usesHomepage": "conf.galaxy_url/root?id=plasma_mutation", 
+            "usesName": "plasma_mutation", 
+            "usesVersion": "plasmagatkhegp.tag.1.0"
+        }
+    ], 
+    "interface": [
+        {
+            "interfaceType": "Web UI"
+        }
+    ], 
+    "sourceRegistry": "https://", 
+    "name": "plasma_mutation", 
+    "resourceType": [
+        "Tool"
+    ], 
+    "maturity": "Stable", 
+    "contact": [
+        {
+            "contactEmail": "william.digan@myemail.fr", 
+            "contactName": "william"
+        }
+    ], 
+    "publications": {
+        "publicationsPrimaryID": "None"
+    }
+}

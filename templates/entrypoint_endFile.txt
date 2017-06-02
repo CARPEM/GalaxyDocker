@@ -1,0 +1,47 @@
+while [ ! -f "$file" ]
+do
+  echo "Galaxy and regate  instance are not ready"
+  sleep 20
+done
+ls -l /results/regateDone.txt
+echo "start to update tools metadata with edam ontology"
+sleep 10
+
+############################
+#Add Workflows and tools
+#and Edam Ontologies description
+#to the DB
+############################
+python manage.py shell -c "execfile('STARTUP_Add_Workflows_Information.py')"
+#in order to not have bugs will be deleted soon in the public git
+cp /nas_Dir/toolsInformation_20170123/plasma_mutation* /results/regate_tools/
+python manage.py shell -c "execfile('addPlasmaMutation_Information.py')"
+
+############################
+#Start supervisor for Celery
+############################
+supervisord -c /etc/supervisor/supervisord.conf
+supervisorctl reread
+supervisorctl update
+supervisorctl start all
+
+############################
+#Prepare log files and start
+#outputting logs to stdout
+############################
+touch /srv/logs/gunicorn.log
+touch /srv/logs/access.log
+tail -n 0 -f /srv/logs/*.log &
+echo "Starting Gunicorn."
+TIMEOUT=300
+############################
+# Start Gunicorn processes
+############################
+gunicorn analysismanager.wsgi:application \
+    --name analysismanager \
+    --timeout 600 \
+    --bind 0.0.0.0:8000 \
+    --workers 3 \
+    --log-level=info \
+    --log-file=/srv/logs/gunicorn.log \
+    --access-logfile=/srv/logs/access.log 

@@ -1,0 +1,146 @@
+[
+    {
+        "Id": "sha256:6cea399f0ad459faca8d2b7401f2d85eccde8b46004cc82607a6b076cfa12c23",
+        "RepoTags": [
+            "testsamtools:latest"
+        ],
+        "RepoDigests": [],
+        "Parent": "sha256:2718d875f92de6e83d493cbb7c77ec7906a21918eab0e1ed1583f8ea416ab437",
+        "Comment": "",
+        "Created": "2017-05-11T11:07:18.541202535Z",
+        "Container": "552b7ae363e13f7e122febf817457153c2d1663f15ec904cbc7178feb7f52f43",
+        "ContainerConfig": {
+            "Hostname": "dfc2eabdf236",
+            "Domainname": "",
+            "User": "biodocker",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/biodocker/bin",
+                "DEBIAN_FRONTEND=noninteractive",
+                "HOME=/home/biodocker",
+                "ZIP=samtools-1.2.tar.bz2",
+                "URL=https://github.com/BioDocker/software-archive/releases/download/samtools",
+                "FOLDER=samtools-1.2",
+                "DST=/tmp",
+                "input_format=bam",
+                "input_name=input",
+                "input_label=BAM file",
+                "output_name=output",
+                "output_format=tabular",
+                "output_label=${tool.name} on ${on_string}",
+                "exec_command=\u003c![CDATA[ \\nif [ ! -f \"${input}.bai\" ] ; then \\n    ln -s \"${input}\" input.bam ; \\n    samtools sort -o sorted.bam -O bam -T sts \"${input}\" ; \\n    samtools index sorted.bam ; \\n    samtools idxstats sorted.bam \u003e \"${output}\" ; \\nelse \\n    samtools idxstats \"${input}\" \u003e \"${output}\" ; \\nfi]]\u003e",
+                "tool_Description=tabulate mapping statistics for BAM dataset",
+                "tool_Version=2.0",
+                "tool_ID=samtools_idxstats",
+                "tool_Name=IdxStats",
+                "stdio=1:"
+            ],
+            "Cmd": [
+                "/bin/sh",
+                "-c",
+                "#(nop) ",
+                "ENV stdio=1:"
+            ],
+            "Image": "sha256:2718d875f92de6e83d493cbb7c77ec7906a21918eab0e1ed1583f8ea416ab437",
+            "Volumes": {
+                "/config": {},
+                "/data": {}
+            },
+            "WorkingDir": "/data",
+            "Entrypoint": null,
+            "OnBuild": [],
+            "Labels": {}
+        },
+        "DockerVersion": "1.12.3",
+        "Author": "",
+        "Config": {
+            "Hostname": "dfc2eabdf236",
+            "Domainname": "",
+            "User": "biodocker",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/biodocker/bin",
+                "DEBIAN_FRONTEND=noninteractive",
+                "HOME=/home/biodocker",
+                "ZIP=samtools-1.2.tar.bz2",
+                "URL=https://github.com/BioDocker/software-archive/releases/download/samtools",
+                "FOLDER=samtools-1.2",
+                "DST=/tmp",
+                "input_format=bam",
+                "input_name=input",
+                "input_label=BAM file",
+                "output_name=output",
+                "output_format=tabular",
+                "output_label=${tool.name} on ${on_string}",
+                "exec_command=\u003c![CDATA[ \\nif [ ! -f \"${input}.bai\" ] ; then \\n    ln -s \"${input}\" input.bam ; \\n    samtools sort -o sorted.bam -O bam -T sts \"${input}\" ; \\n    samtools index sorted.bam ; \\n    samtools idxstats sorted.bam \u003e \"${output}\" ; \\nelse \\n    samtools idxstats \"${input}\" \u003e \"${output}\" ; \\nfi]]\u003e",
+                "tool_Description=tabulate mapping statistics for BAM dataset",
+                "tool_Version=2.0",
+                "tool_ID=samtools_idxstats",
+                "tool_Name=IdxStats",
+                "stdio=1:"
+            ],
+            "Cmd": [
+                "/bin/bash"
+            ],
+            "Image": "sha256:2718d875f92de6e83d493cbb7c77ec7906a21918eab0e1ed1583f8ea416ab437",
+            "Volumes": {
+                "/config": {},
+                "/data": {}
+            },
+            "WorkingDir": "/data",
+            "Entrypoint": null,
+            "OnBuild": [],
+            "Labels": {}
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 713616449,
+        "VirtualSize": 713616449,
+        "GraphDriver": {
+            "Name": "aufs",
+            "Data": null
+        },
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:8698b31c92d5cf4ee37154fc560516040f372bd45707c3161be479443970d8a2",
+                "sha256:982549bd6b32c8d59c693d27bf22c3613ac66dc344833881ef4099be656330cb",
+                "sha256:0d81735d8272465865b21615e57746b82ffd4180c9ef4a2ed6e7bfe7464cc156",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:a8bff4114bc27530beb630e673f532920827ed1b81ec9ebd12400f81c183812c",
+                "sha256:adb1c1142560dc52af6a19b8875bbf0b274ac3fbdfc287d87de20e7df0a03487",
+                "sha256:68d5bad3703216036a60e4e5ed8bb4d3ec65ec813d1e5be09263dce33743c220",
+                "sha256:c6f00d896ccff7ce6dfcad6aa78bfa89191042fe20e93504389f4f787e33cacb",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:60c6605a0c379e2b06ab5998a0a0596bf0de8a35096ac5c7cbe780e150fafde6",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:83176d3fd2d2e7692c16223a8fc6c00742efb7df86edcabece152efaf791bf91",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:8f05cbbde05fb76e2ce9c0f12b3f282704016c9b9977436a9de570ddc67a488c",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"
+            ]
+        }
+    }
+]

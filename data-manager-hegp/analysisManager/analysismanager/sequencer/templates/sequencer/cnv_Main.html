@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<title>Project</title>
+   {% load static %}
+	
+
+<!--
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+
+<script> 
+$(function(){
+  $("#header").load("header.html"); 
+  $("#footer").load("footer.html"); 
+});
+</script> 
+-->
+<!--
+</head>
+-->
+{% include "sequencer/header.html" %}    	
+
+<body>
+    <div id="wrapper">
+		{% include "sequencer/navigation_top.html" %}    	
+
+        <!-- Page Content -->
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">CNV</h1>
+                                     
+               <div class="panel panel-green">
+					{% if cnv_run %}
+                        <div class="panel-heading">
+						{% if user.is_authenticated  %}
+							<p> CNV Analysis for{{ cnv_run.run_name }}</p>
+							<p> <b>Performed by user :</b></p>
+							<p> <b>{{user.username}}</b></p>
+                        </div>
+                        <div class="panel-body">
+					{% if experimentsDict %}
+					{% if historyCNV %}		
+						<div class="alert alert-success">
+							<p>The bed <b>ColonLungV2.20140523.bed</b> was found on folder :</p>
+							<p>{{ experimentsDict.coverageAnalysis_out}}</p>
+						</div>
+						<div class="alert alert-success">
+							<p><b>bcmatrix</b> :</p>
+							<p>{{ experimentsDict.bcmatrix }}</p>
+						</div>
+						<div class="alert alert-success">
+							<p><b>bcsummary</b> :</p>
+							<p>{{ experimentsDict.bcsummary }}</p>
+						</div>  
+				
+						<div class="alert alert-success">
+							<p>CNV analysis added to the history :</p>
+							<p><b>{{ historyCNV.name }}</b></p>							
+						</div>  
+                        </div>
+       
+ 						               
+                        <div class="panel-footer">
+                            <p>CNV Analysis for {{user.username}} </p>
+                            <p>Run the {{historyCNV.today}} </p>
+                            
+                        </div>
+ 					{% endif %}	                         
+					{% endif %}	                        
+					{% endif %}	                        
+					{% endif %}	                        
+                    </div>
+                    
+ 
+                        <!--
+											start WDDGN
+-->
+
+                         <!-- /.panel-body -->
+
+                        </div>
+                        
+<!--
+END WDGN
+-->
+                    </div>
+                    <!-- /.col-lg-12 -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
+        </div>
+        <!-- /#page-wrapper -->	
+	
+		<!--Remaining section-->
+
+    </div>
+    <!-- /#wrapper -->
+ <!-- DataTables CSS -->
+     <script src="{% static "bower_components/jquery/dist/jquery.min.js" %}" ></script>
+    <link href="{% static "bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css"  %}" rel="stylesheet">
+
+    <!-- DataTables Responsive CSS -->
+    <link href="{% static "bower_components/datatables-responsive/css/dataTables.responsive.css"  %}" rel="stylesheet">
+    <link href="https://cdn.datatables.net/select/1.2.0/css/select.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" rel="stylesheet">
+  
+    <!-- DataTables JavaScript -->
+     
+    <script src= "{% static "bower_components/datatables/media/js/jquery.dataTables.min.js"  %}" type="text/javascript"></script>
+    <script src="{% static "bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js"  %}" type="text/javascript"></script>
+    <script src="{% static "bower_components/datatables-responsive/js/dataTables.responsive.js"  %}" type="text/javascript"></script>
+    
+    <!-- Custom Theme JavaScript -->
+    <script src="{% static "dist/js/sb-admin-2.js"  %}" ></script>
+
+    <!-- Page-Level Demo Scripts - Tables - Use for reference -->
+
+  
+    <script>
+    $(document).ready(function() {
+        $('#dataTables-example').DataTable({
+                responsive: true
+        });
+    });
+    
+    //~ $(document).ready(function() {
+    //~ $('#dataTables-example').DataTable( {
+        //~ columnDefs: [ {
+            //~ orderable: false,
+            //~ className: 'select-checkbox',
+            //~ targets:   0
+        //~ } ],
+        //~ select: {
+            //~ style:    'os',
+            //~ selector: 'td:first-child'
+        //~ },
+        //~ order: [[ 1, 'asc' ]]
+    //~ } );
+//~ } );
+
+//
+// Updates "Select all" control in a data table
+////
+// Updates "Select all" control in a data table
+//
+
+    </script>
+  <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+  
+{% include "sequencer/footer.html" %}    	
+</body>
+</html>	
+
+
