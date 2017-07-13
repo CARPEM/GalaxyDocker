@@ -2,7 +2,8 @@
 ##########################
 #URL PROTON
 ##########################
-sequencer_base_url='http://your.proton.url/rundb/api/v1'
+sequencer_base_url='http://your.proton.fr/rundb/api/v1'
+sequencer_root_base_url='http://your.proton.fr'
 sequencer_user="usserproton"
 sequencer_password="protonpaswd"
 sequencer_severName="protonadress"

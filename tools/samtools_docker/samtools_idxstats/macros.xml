@@ -2,7 +2,7 @@
     <xml name="requirements">
         <requirements>
 
-			<container type="docker">biodckr/samtools</container>
+			<container type="docker">wdcarpem/samtools</container>
            <!-- <yield/> -->
         </requirements>
         

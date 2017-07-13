@@ -10,9 +10,9 @@ from django.template import loader
 from datamanagerpkg import ProtonCommunication_data_manager
 from datamanagerpkg import GalaxyCommunication_data_manager
 
-from .models import Experiments, GalaxyUsers 
-from .models import GalaxyJobs, ExperimentRawData
-from .models import Workflows,WorkflowsTools,Supportedfiles
+from .models import Experiments, GalaxyUsers ,toDownloads
+from .models import GalaxyJobs, ExperimentRawData, savedNGSData
+from .models import Workflows,WorkflowsTools,Supportedfiles,NGSBamData
 import json
 import os
 from django.contrib.auth.models import User
@@ -22,6 +22,11 @@ from bioblend.galaxy import GalaxyInstance
 import tasks
 import string
 import random
+import requests
+from pprint import pprint
+import paramiko
+from scp import SCPClient
+
 ##############################################
 #MAIN PARAMETERS
 
@@ -82,9 +87,7 @@ def getExperiments(request):
     logger.debug("usersFromGalaxy: %s ",str(usersFromGalaxy))
     logger.debug("##########################")    
     logger.debug("Build context with experiments and users information")    
-
     context = {
-        'experiments_list': experiments_list,
         'experiments_list': experiments_list,
         'users' :usersFromGalaxy,
         'bams' :bams,
@@ -93,6 +96,199 @@ def getExperiments(request):
     logger.info("END getExperiments() view")
     logger.info("##########################")    
     return HttpResponse(template.render(context, request)) 	
+
+
+def downloads(request):
+    logger.info("##########################")
+    logger.info("START getExperiments() view")
+    logger.info("##########################")
+    logger.debug("Load Template sequencer/downloads.html ")   
+    template = loader.get_template('sequencer/downloads.html')
+    logger.info("Return all Experiments ")    
+     #~ #define in models.py
+    todownload_list = toDownloads.objects.all() 
+    logger.debug("##########################")
+    logger.debug("apiKey and base_url define below")
+    logger.debug("##########################")    
+    logger.info("Get GalaxyUsers()")
+     #~ #define in models.py 
+    usersFromGalaxy=GalaxyUsers.objects.all()
+    #~ bams=ExperimentRawData.objects.all()
+    logger.debug("usersFromGalaxy: %s ",str(usersFromGalaxy))
+    logger.debug("##########################")    
+    logger.debug("Build context with experiments and users information")    
+    context = {
+        'todownload_list': todownload_list,
+        'users' :usersFromGalaxy,
+        #~ 'bams' :bams,
+    }
+    logger.info("##########################")
+    logger.info("END getExperiments() view")
+    logger.info("##########################")    
+    return HttpResponse(template.render(context, request)) 
+
+def locateDataToDownload(nbLimit,toMatch):
+    sshProton=ProtonCommunication_data_manager.sshConnection(sequencer_severName,sequencer_user,sequencer_password)
+    ssh_stdin, ssh_coverageAnalysis_stdout, ssh_stderr = sshProton.exec_command("ls /results/analysis/output/Home/ |sort -ur |grep -m "+str(nbLimit)+" '"+toMatch +"'")
+    getData=ssh_coverageAnalysis_stdout.readlines()	
+    print(getData)
+    sshProton.close()
+    return (getData)
+  
+
+def actualizeDownloads(request):
+    logger.info("##########################")
+    logger.info("START actualizeDownloads() view")
+    logger.info("##########################")
+    experimentLimit=request.POST.get('sliderDataInput')
+    if (experimentLimit != None):
+        logger.info("##########################") 
+        logger.info("Query the %s last experiments",str(experimentLimit))        
+        info=locateDataToDownload(experimentLimit,"Auto_user")
+        actualizedparsedInformation(info)
+        info=locateDataToDownload(experimentLimit,"reanalyz")
+        actualizedparsedInformation(info)
+
+    logger.info("END actualizeDownloads() view")
+    logger.info("##########################")
+    return HttpResponseRedirect(reverse('sequencer:downloadsdata'))    
+
+def actualizedparsedInformation(info) :
+    for element in info:
+        if not "_tn_" in element :
+            withoutAuto=str(element).replace("Auto_","").rstrip()
+            print(withoutAuto)
+            withoutAutoTmp=withoutAuto.split('_')
+            cleanID=str("_".join(withoutAutoTmp[0:len(withoutAutoTmp)-1]))
+            resp = requests.get(sequencer_base_url+'/results/', auth=(sequencer_user,sequencer_password),params={"format": "json", "resultsName__endswith" : cleanID})
+            resp_json = resp.json()
+            pprint(resp_json)
+            try:
+                todown = toDownloads.objects.get(folder_name=str(element).rstrip())
+            except toDownloads.DoesNotExist:
+                todown = None
+            if  todown == None:        
+                for item in resp_json['objects']:  
+                    todown = toDownloads.objects.create(folder_name=str(element).rstrip(),
+                    filesystempath=item['filesystempath'],
+                    reference=item['reference'],
+                    status=item['status'],
+                    backupOnNas="false",
+                    backupValidate="non",
+                    timeToComplete=item['timeToComplete'],                        
+                    timeStamp=item['timeStamp'])
+                    try:
+                        checkNGSBackup = savedNGSData.objects.get(folder_name=str(element).rstrip())
+                    except savedNGSData.DoesNotExist:
+                        checkNGSBackup = None
+                    if  checkNGSBackup != None:
+                        todown.backupOnNas="True"
+                        todown.backupValidate="Termin&egrave;"
+                    if item['diskusage']== None :
+                        todown.diskusage=str(0) 
+                    else:
+                        todown.diskusage=str(item['diskusage'])                       
+                    todown.save()
+                        
+                        
+                        
+def showSavedData(request):
+    logger.info("##########################")
+    logger.info("START showSavedData() view")
+    logger.info("##########################")
+    logger.debug("Load Template sequencer/ngsData.html ")   
+    template = loader.get_template('sequencer/ngsData.html')
+    logger.info("Return all Experiments ")    
+     #~ #define in models.py
+    todownload_list = savedNGSData.objects.all() 
+    logger.debug("##########################")
+    logger.debug("apiKey and base_url define below")
+    logger.debug("##########################")    
+    logger.info("Get GalaxyUsers()")
+     #~ #define in models.py 
+    usersFromGalaxy=GalaxyUsers.objects.all()
+    #~ bams=ExperimentRawData.objects.all()
+    logger.debug("usersFromGalaxy: %s ",str(usersFromGalaxy))
+    logger.debug("##########################")    
+    logger.debug("Build context with experiments and users information")    
+    context = {
+        'todownload_list': todownload_list,
+        'users' :usersFromGalaxy,
+        #~ 'bams' :bams,
+    }
+    logger.info("##########################")
+    logger.info("END getExperiments() view")
+    logger.info("##########################")    
+    return HttpResponse(template.render(context, request)) 
+##############################################
+#~#USER LOG IN 
+def showSavedDataLogs(request,user_name):
+    logger.info("##########################")
+    logger.info("START showSavedData() view")
+    logger.info("##########################")
+    logger.debug("Load Template sequencer/ngsData.html ")   
+    template = loader.get_template('sequencer/ngsData.html')
+    logger.info("Return all Experiments ")    
+    #~ latest_question_list = Experiments.objects.all()
+    #~ experiments_list = Experiments.objects.all()    
+    todownload_list = savedNGSData.objects.all()     
+    ##############################################    
+    gi=GalaxyCommunication_data_manager.galaxyConnection(galaxy_base_url,apiKey)
+    users=GalaxyUsers.objects.all() #return a list of dictionnary
+    currentUser=GalaxyUsers.objects.get(user_id=user_name)
+    logger.debug( "##########################")
+    logger.debug( "checkusers")
+    logger.debug( "##########################")    
+    user = authenticate(username=currentUser.user_email, password=currentUser.user_email)
+    if user is not None:
+        login(request, user)
+    context = {
+        #~ 'latest_question_list': latest_question_list,
+        'todownload_list': todownload_list,
+        'users' :users,
+        'user_name':currentUser.user_email,
+        'current_user_name':currentUser.user_email,
+    }
+    logger.debug("##########################")
+    logger.debug("job done getExperiments")
+    logger.debug("##########################")
+    return HttpResponse(template.render(context, request))
+
+def getSequenceData(request,experiment_name):
+    logger.info("##########################")
+    logger.info("START getBamReviewed() view")
+    logger.info("##########################")
+    logger.info("Check User autentification")
+    logger.info("##########################")
+    logger.info("Parsed User Request")
+    logger.info("##########################")    
+    UserRequest=request.POST
+    try :
+        thisDownloadData = toDownloads.objects.get(folder_name=experiment_name)
+        thisDownloadData.backupOnNas="en cours"
+        thisDownloadData.backupValidate="en cours"
+        thisDownloadData.save()
+    except toDownloads.DoesNotExist :
+        thisDownloadData = None
+    #~ current_exp = toDownloads.objects.get(folder_name=experiment_name)
+    #~ for key, val in UserRequest.iteritems():
+        #~ print str(key)
+        #~ print str(val)
+    logger.info("##########################")
+    logger.info("##########################")    
+    logger.info("Copy data throught ssh and scp")
+    logger.debug("##########################")        
+    #~ logger.debug(experimentsDict['bammd5sum'])
+    template = loader.get_template('sequencer/download_Main.html')    
+    logger.debug("##########################")           
+    logger.debug("##########################")      
+    context = {
+        'current_exp': thisDownloadData,
+        'experimentsDict':UserRequest,
+    }      
+    #this tasks will be run before by celery as a baground event
+    return HttpResponse(template.render(context, request)) 
+
 
 ##############################################
 #~#USER LOG IN 
@@ -176,7 +372,8 @@ def QueryExperiments(request, user_id):
     #~ # Always return an HttpResponseRedirect after successfully dealing
     #~ #with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
-    return HttpResponseRedirect(reverse('sequencer:projectslogs', args=(currentuser.user_id,)))   
+    return HttpResponseRedirect(reverse('sequencer:showdatalogs', args=(currentuser.user_id,)))   
+    #~ #return HttpResponseRedirect(reverse('sequencer:projectslogs', args=(currentuser.user_id,)))   
       
 def vote(request, user_id):
     #~ question = get_object_or_404(Question, pk=question_id)
@@ -187,7 +384,8 @@ def vote(request, user_id):
     #~ # Always return an HttpResponseRedirect after successfully dealing
     #~ with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
-    return HttpResponseRedirect(reverse('sequencer:projectslogs', args=(currentuser.user_id,)))    
+    return HttpResponseRedirect(reverse('sequencer:showdatalogs', args=(currentuser.user_id,)))    
+    #~ #return HttpResponseRedirect(reverse('sequencer:projectslogs', args=(currentuser.user_id,)))    
 
 
     
@@ -275,7 +473,6 @@ def getDataPath(experiment_Complete):
                 experiment_Complete.delete()   
                 sshProton.close()  
                 continue
-                              
             ionExpressTag=str(bamfile).split("/")
             try :     
                 logger.debug("something "+str(experimentsDict['sampleKey']))
@@ -314,7 +511,8 @@ def getGalaxyUsers(request):
     #~ # Always return an HttpResponseRedirect after successfully dealing
     #~ with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
-    return HttpResponseRedirect(reverse('sequencer:projects'))
+    return HttpResponseRedirect(reverse('sequencer:savedData'))
+    #~ return HttpResponseRedirect(reverse('sequencer:projects'))
 
 def getBamReviewed(request,experiment_name):
     logger.info("##########################")
@@ -323,11 +521,9 @@ def getBamReviewed(request,experiment_name):
     logger.info("Check User autentification")
     usermail=request.user.username
     if request.user.is_authenticated():
-        logger.debug("User logged as ; %s",request.user.username)
-     
+        logger.debug("User logged as ; %s",request.user.username)    
     else:
         logger.error("No user autentificated, No able to pursue further the analysis")
-
     logger.info("##########################")
     logger.info("Parsed User Request")
     logger.info("##########################")    
@@ -354,7 +550,6 @@ def getBamReviewed(request,experiment_name):
     galaxy_dictionnary=json.dumps(experimentsDict))
     logger.info("save the galaxyJobs object")    
     local_history.save()     
-    
     for bamfileTag in myCheckedBam:
         try:
             currentBam=current_exp.experimentrawdata_set.get(ionTag=bamfileTag)
@@ -364,10 +559,8 @@ def getBamReviewed(request,experiment_name):
         except ExperimentRawData.DoesNotExist:
             currentBam = None
             logger.error("This bam is not not avaible in this experiment")     
- 	
         logger.info(str(currentBam.bam_path).split("/")[len(str(currentBam.bam_path).split("/"))-1])
         logger.info("##########################")
-
     logger.info("##########################")    
     logger.info("CREATE INPUT FOLDER FROM PROTON NAS_DIR/%s/bam",experimentsDict['resultsName'])     
     if not os.path.exists(nasInput+experimentsDict['resultsName']+plasmaFolderName):
@@ -376,17 +569,14 @@ def getBamReviewed(request,experiment_name):
     logger.info("CREATE RESULTS FOLDER FROM GALAXY NAS_DIR/RESULTS/%s/bam",experimentsDict['resultsName'])     
     if not os.path.exists(nasResults+experimentsDict['resultsName']+plasmaFolderName):
         os.makedirs(nasResults+experimentsDict['resultsName']+plasmaFolderName)
-
     local_history.save()    
     logger.info("##########################")
     logger.info("Connect to the server : %s",sequencer_severName )     
     logger.info("##########################")    
     logger.info("Copy data throught ssh and scp")
-
     logger.debug("##########################")        
     #~ logger.debug(experimentsDict['bammd5sum'])
     template = loader.get_template('sequencer/plasma_Main.html')    
-     
     logger.debug("##########################")           
     logger.debug("go the GalaxyUser"+currentuser.user_email)   
     logger.debug("##########################")      
@@ -400,3 +590,86 @@ def getBamReviewed(request,experiment_name):
     #this tasks will be run before by celery as a baground event
     #~ tasks.task_Download_RawData() 
     return HttpResponse(template.render(context, request)) 
+
+
+def getBamFromNgsData(request,experiment_name):
+    logger.info("##########################")
+    logger.info("START getBamFromNgsData() view")
+    logger.info("##########################")
+    logger.info("Check User autentification")
+    usermail=request.user.username
+    if request.user.is_authenticated():
+        logger.debug("User logged as ; %s",request.user.username)
+    else:
+        logger.error("No user autentificated, No able to pursue further the analysis")
+        
+    logger.info("##########################")
+    logger.info("Parsed User Request")
+    logger.info("##########################")    
+    UserRequest=request.POST
+    myCheckedBam=[]
+    for key, val in UserRequest.iteritems():
+        #~ print str(key)
+        #~ print str(val)
+        if 'plasmaCheckboxValue' in str(key):
+            myCheckedBam.append(str(val))
+    current_exp = savedNGSData.objects.get(folder_name=experiment_name)
+    #~ experimentsDict=json.loads(current_exp.dictionnary)
+    bamtoDl=[]
+    #create here the local history
+    #add the bam like this throught the experiments
+    currentuser= GalaxyUsers.objects.get(user_email=usermail)
+    #~ PlasmaWorkflow= Workflows.objects.get(name='Plasma_mutation')   
+    PlasmaSamtools= Workflows.objects.get(name='demo_samtools')   
+    local_history=GalaxyJobs(tag_id=id_generator(),
+    history_user_email=currentuser,
+    resultsName=current_exp.folder_name,
+    history_analyse_type=PlasmaSamtools,
+    progression="suspendu",
+    history_download=False,
+    galaxy_dictionnary=json.dumps(json.loads(current_exp.dataDictionnary)))
+    logger.info("save the galaxyJobs object")
+    local_history.save()
+    for bamfileTag in myCheckedBam:
+        try:
+            currentBam=current_exp.ngsbamdata_set.get(ionTag=bamfileTag)
+            local_history.list_experimentRawData.add(currentBam)
+            bamtoDl.append(str(currentBam.bam_path))
+            local_history.save()        
+        except NGSBamData.DoesNotExist:
+            currentBam = None
+            logger.error("This bam is not not avaible in this experiment")     
+        logger.info(str(currentBam.bam_path).split("/")[len(str(currentBam.bam_path).split("/"))-1])
+        logger.info("##########################")
+    logger.info("##########################")    
+    local_history.save()    
+    logger.info("##########################")
+    logger.info("Connect to the server : %s",sequencer_severName )     
+    logger.info("##########################")    
+    logger.info("Copy data throught ssh and scp")
+    logger.debug("##########################")        
+    #~ logger.debug(experimentsDict['bammd5sum'])
+    template = loader.get_template('sequencer/plasma_Main.html')    
+    logger.debug("##########################")           
+    logger.debug("go the GalaxyUser"+currentuser.user_email)   
+    logger.debug("##########################")      
+    bamFileName=bamtoDl
+    context = {
+        'current_exp': current_exp,
+        'experimentsDict':bamFileName,
+    }      
+    #this tasks will be run before by celery as a baground event
+    #~ tasks.task_Download_RawData() 
+    return HttpResponse(template.render(context, request)) 
+ 
+         #~ 'historyPlasma': "yoyo",
+   
+        #~ 'experimentsDict':experimentsDict['bamForPlasma'], #will print the bam absolut path
+    
+    #~ logger.info("CREATE INPUT FOLDER FROM PROTON NAS_DIR/%s/bam",experimentsDict['resultsName'])     
+    #~ if not os.path.exists(nasInput+experimentsDict['resultsName']+plasmaFolderName):
+        #~ os.makedirs(nasInput+experimentsDict['resultsName']+plasmaFolderName)
+        #~ 
+    #~ logger.info("CREATE RESULTS FOLDER FROM GALAXY NAS_DIR/RESULTS/%s/bam",experimentsDict['resultsName'])     
+    #~ if not os.path.exists(nasResults+experimentsDict['resultsName']+plasmaFolderName):
+        #~ os.makedirs(nasResults+experimentsDict['resultsName']+plasmaFolderName)

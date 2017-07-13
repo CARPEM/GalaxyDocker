@@ -341,8 +341,7 @@ def mainPlasma(expDict,base_url,apiKey,inputDataFolder):
         :type apiKey: string
         :returns historyID: the galaxy history where the data and the CNV run are located
         :rtype historyID: a dictionnary
-
-	"""	
+	"""
 	gi=galaxyConnection(base_url,apiKey)
 	#~ if a new user add all the workflow
 	logger.info("##########################")
@@ -364,6 +363,183 @@ def mainPlasma(expDict,base_url,apiKey,inputDataFolder):
 	Run_Plasma_Workflow(gi,dataPlasmaID,str(historyID['id']))
 	logger.info("job done, hydrate yourself")
 	return(historyID)
+
+
+def mainSamtools_fromNGSData(expDict,base_url,apiKey,inputDataFolder):
+	""" 
+	mainPlasma_fromNGSData(expDict,base_url,apiKey)
+	returns (historyID)
+	
+	**Descriptions**:
+	
+	This function execute the CNV routine. From a run of the Ion Proton,
+	The routine will connect the user to Galaxy, create an history,
+	upload the CNV input files to it and run the CNV workflow.
+	
+	**Parameters**:
+	
+        :param expDict: a dictionnary output from ProtonCommunication_data_manager.copyData().
+        :param base_url: an url which point to your galaxy instance 
+        :param apiKey: a valid galaxy API key
+        :type base_url: string
+        :type apiKey: string
+        :returns historyID: the galaxy history where the data and the CNV run are located
+        :rtype historyID: a dictionnary
+	"""
+	gi=galaxyConnection(base_url,apiKey)
+	#~ if a new user add all the workflow
+	logger.info("##########################")
+	logger.info("mainPlasma for "+expDict["resultsName"])
+	logger.info("##########################")	
+
+	historyID=Create_History(gi,"_Samtools_"+expDict["resultsName"])
+	#~ Uploads data to a specific history
+	#~ upload_To_History_Plasma_NGS_data(gi,expDict,str(historyID['id']),inputDataFolder)
+	upload_To_History_Samtools_NGS_data(gi,expDict,str(historyID['id']),inputDataFolder)
+	logger.info("##########################")
+	logger.info("mupload_From_Library_To_Plasma_History :")
+	logger.info("##########################")		
+	#~ upload_From_Library_To_Plasma_History(gi,expDict,str(historyID['id']),"/Plasma/")
+	#~ Retrieve the current history and build a 
+	#~ a dictionnary of the recent Uploaded data
+	
+##############################################
+	dataPlasmaID=Samtools_Input_Dict(gi,str(historyID['id']))
+	Run_Samtools_Workflow(gi,dataPlasmaID,str(historyID['id']))
+	logger.info("job done, hydrate yourself")
+	return(historyID)
+##############################################
+#~ Uploads data to a specific history for NGS data
+##############################################
+
+
+
+def mainPlasma_fromNGSData(expDict,base_url,apiKey,inputDataFolder):
+	""" 
+	mainPlasma_fromNGSData(expDict,base_url,apiKey)
+	returns (historyID)
+	
+	**Descriptions**:
+	
+	This function execute the CNV routine. From a run of the Ion Proton,
+	The routine will connect the user to Galaxy, create an history,
+	upload the CNV input files to it and run the CNV workflow.
+	
+	**Parameters**:
+	
+        :param expDict: a dictionnary output from ProtonCommunication_data_manager.copyData().
+        :param base_url: an url which point to your galaxy instance 
+        :param apiKey: a valid galaxy API key
+        :type base_url: string
+        :type apiKey: string
+        :returns historyID: the galaxy history where the data and the CNV run are located
+        :rtype historyID: a dictionnary
+	"""
+	gi=galaxyConnection(base_url,apiKey)
+	#~ if a new user add all the workflow
+	logger.info("##########################")
+	logger.info("mainPlasma for "+expDict["resultsName"])
+	logger.info("##########################")	
+
+	historyID=Create_History(gi,"_PLASMA_"+expDict["resultsName"])
+	#~ Uploads data to a specific history
+	upload_To_History_Plasma_NGS_data(gi,expDict,str(historyID['id']),inputDataFolder)
+	logger.info("##########################")
+	logger.info("mupload_From_Library_To_Plasma_History :")
+	logger.info("##########################")		
+	#~ upload_From_Library_To_Plasma_History(gi,expDict,str(historyID['id']),"/Plasma/")
+	#~ Retrieve the current history and build a 
+	#~ a dictionnary of the recent Uploaded data
+	
+##############################################
+	dataPlasmaID=Plasma_Input_Dict(gi,str(historyID['id']))
+	Run_Plasma_Workflow(gi,dataPlasmaID,str(historyID['id']))
+	logger.info("job done, hydrate yourself")
+	return(historyID)
+##############################################
+#~ Uploads data to a specific history for NGS data
+##############################################
+def upload_To_History_Samtools_NGS_data(galaxyWeb,expDict,historyID,analysisType):
+	""" 
+	upload_To_History_Plasma(galaxyWeb,expDict,historyID)
+	returns (int)
+	
+	**Descriptions**:
+	
+	This function upload to a specific history the CNV data.
+
+	**Parameters**:
+	
+        :param galaxyWeb: a connection to your galaxy instance 
+        :type galaxyWeb: GalaxyInstance
+        :param expDict: a result dictionnary output from the ProtonCommunication script
+        :type expDict: dictionnary
+        :param historyID: a galaxy history ID
+        :type historyID: string
+        :returns: 1
+        :rtype: int   
+	"""
+	logger.info("##########################")
+	logger.info("upload_To_History_Plasma() for "+expDict["resultsName"])
+	logger.info("##########################")		
+	for bampath in expDict['bamForPlasma']:		
+		galaxyWeb.tools.upload_file(path=bampath,history_id=historyID,file_type='bam',dbkey="hg19")
+		ionTagnobam=str("".join(str(bampath.split("/")[-1]).split(".")[0]))
+		absPath=bampath.split("/")
+		outputtxt = open("/".join(absPath[0:len(absPath)-1])+"/"+ionTagnobam+".txt",'w')
+		if ionTagnobam in expDict: 
+			outputtxt.write(expDict[str(ionTagnobam)])
+		else:
+			outputtxt.write(str(ionTagnobam))
+		outputtxt.close()
+		logger.debug("##########################")
+		logger.debug("bampath "+bampath)
+		logger.debug("ionTagnobam "+ionTagnobam)
+		logger.debug("##########################")				
+		#~ galaxyWeb.tools.upload_file(path="/".join(absPath[0:len(absPath)-1])+"/"+ionTagnobam+".txt",history_id=historyID,file_type='txt',dbkey="hg19plasma")
+	return 1
+	
+	
+
+def upload_To_History_Plasma_NGS_data(galaxyWeb,expDict,historyID,analysisType):
+	""" 
+	upload_To_History_Plasma(galaxyWeb,expDict,historyID)
+	returns (int)
+	
+	**Descriptions**:
+	
+	This function upload to a specific history the CNV data.
+
+	**Parameters**:
+	
+        :param galaxyWeb: a connection to your galaxy instance 
+        :type galaxyWeb: GalaxyInstance
+        :param expDict: a result dictionnary output from the ProtonCommunication script
+        :type expDict: dictionnary
+        :param historyID: a galaxy history ID
+        :type historyID: string
+        :returns: 1
+        :rtype: int   
+	"""
+	logger.info("##########################")
+	logger.info("upload_To_History_Plasma() for "+expDict["resultsName"])
+	logger.info("##########################")		
+	for bampath in expDict['bamForPlasma']:		
+		galaxyWeb.tools.upload_file(path=bampath,history_id=historyID,file_type='bam',dbkey="hg19plasma")
+		ionTagnobam=str("".join(str(bampath.split("/")[-1]).split(".")[0]))
+		absPath=bampath.split("/")
+		outputtxt = open("/".join(absPath[0:len(absPath)-1])+"/"+ionTagnobam+".txt",'w')
+		if ionTagnobam in expDict: 
+			outputtxt.write(expDict[str(ionTagnobam)])
+		else:
+			outputtxt.write(str(ionTagnobam))
+		outputtxt.close()
+		logger.debug("##########################")
+		logger.debug("bampath "+bampath)
+		logger.debug("ionTagnobam "+ionTagnobam)
+		logger.debug("##########################")				
+		galaxyWeb.tools.upload_file(path="/".join(absPath[0:len(absPath)-1])+"/"+ionTagnobam+".txt",history_id=historyID,file_type='txt',dbkey="hg19plasma")
+	return 1
 
 ##############################################
 #~ Uploads data to a specific history
@@ -511,7 +687,102 @@ def Plasma_Input_Dict(galaxyWeb,historyID):
 		idPlasmalist.append(dataset["id"])
 	return({'bam':plasmadictbam,'txt':plasmadicttxt})
 
+def Samtools_Input_Dict(galaxyWeb,historyID):
+	""" 
+	Samtools_Input_Dict(galaxyWeb,historyID)
+	returns (data_Input_CNVID)
+	
+	**Descriptions**:
+	
+	This function return a dictionnary whitch contains datasets id for 
+	Plasma input files. This dictionnary contains a bcsummary and bcmatrix keys.
+	
+	**Parameters**:
+	
+        :param galaxyWeb: a connection to your galaxy instance 
+        :type galaxyWeb: GalaxyInstance
+        :param historyID: a galaxy history ID
+        :type historyID: string
+        :returns: data_Input_CNVID
+        :rtype: dictionnary   
+	"""	
 
+	logger.info("##########################")
+	logger.info("Samtools_Input_Dict() for "+historyID)
+	logger.info("##########################")
+	idPlasmalist=[]
+	plasmadicttxt=dict()
+	plasmadictbam=dict()
+	for dataset in galaxyWeb.histories.show_history(historyID,contents=True):
+		print dataset["name"]
+		patientkey=dataset["name"].split(".")[0]
+		logger.debug("##########################")
+		logger.debug("name "+dataset["name"])
+		logger.debug("patientkey "+patientkey)
+		logger.debug("##########################")
+		newdict=dict()
+		if dataset["name"].split(".")[1]=="bam":
+			plasmadictbam[patientkey]=dataset["id"]
+		idPlasmalist.append(dataset["id"])
+	return({'bam':plasmadictbam})
+
+
+
+
+
+
+
+##############################################
+#~ Retrieve the Plasma workflow and execute it
+##############################################
+def Run_Samtools_Workflow(galaxyWeb,data_Input_PLASMAID,historyID):
+	""" 
+	Run_Plasma_Workflow(galaxyWeb,data_Input_PLASMAID,historyID)
+	returns (int)
+	
+	**Descriptions**:
+	
+	This function retrieve the CNV workflow and execute it. Use a dictionnary
+	as input.
+	
+	**Parameters**:
+	
+        :param galaxyWeb: a connection to your galaxy instance 
+        :type galaxyWeb: GalaxyInstance
+        :param data_Input_CNVID: a dictionnary output from function CNV_Input_Dict
+        :type data_Input_CNVID: dictionnary
+        :param historyID: a galaxy history ID
+        :type historyID: string
+        :returns: 1
+        :rtype: int   
+	"""
+	logger.info("##########################")
+	logger.info("Run_Samtools_Workflow() for "+historyID)
+	logger.info("##########################")	
+	PlasmaworkflowID=""
+	for workflow in galaxyWeb.workflows.get_workflows():
+		if "demo_samtools" in workflow["name"]:
+			PlasmaworkflowID=workflow['id']
+			logger.debug("##########################")
+			logger.debug("Workflow ID found "+PlasmaworkflowID)
+			logger.debug("##########################")				
+	Plasma_Workflow=galaxyWeb.workflows.show_workflow(PlasmaworkflowID)
+	#~ cnv_Workflow['inputs']['1']['label']
+	inputWorkflow=dict()
+	for bamName,historyidBam in data_Input_PLASMAID['bam'].iteritems():
+		for key,value in Plasma_Workflow['inputs'].iteritems():
+			#~ print key
+			if ("bam file" in value['label']):
+				inputWorkflow[key]= { 'src':'hda', 'id': historyidBam }
+				logger.debug("##########################")
+				logger.debug("inputWorkflow[key] "+str(inputWorkflow[key]))
+				logger.debug("[key] "+str(key))
+				logger.debug("##########################")					
+
+				#~#Run a plasma analysis for each bam 
+		galaxyWeb.workflows.invoke_workflow(PlasmaworkflowID, inputs=inputWorkflow,history_id=historyID)
+	return(1)
+	
 ##############################################
 #~ Retrieve the Plasma workflow and execute it
 ##############################################

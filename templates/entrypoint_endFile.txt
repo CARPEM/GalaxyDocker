@@ -12,10 +12,9 @@ sleep 10
 #and Edam Ontologies description
 #to the DB
 ############################
-python manage.py shell -c "execfile('STARTUP_Add_Workflows_Information.py')"
+python manage.py shell -c  "import STARTUP_Add_Workflows_Information;STARTUP_Add_Workflows_Information.uploadAWorkflowToDatabase('/nas_Dir/workflow/Galaxy-Workflow-demo_samtools.ga')"
 #in order to not have bugs will be deleted soon in the public git
-cp /nas_Dir/toolsInformation_20170123/plasma_mutation* /results/regate_tools/
-python manage.py shell -c "execfile('addPlasmaMutation_Information.py')"
+python manage.py shell -c "execfile('loadNasData.py')"
 
 ############################
 #Start supervisor for Celery

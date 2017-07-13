@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<title>Project</title>
+   {% load static %}
+	
+
+{% include "sequencer/header.html" %}    	
+
+<body>
+	<div id="wrapper">
+	{% include "sequencer/navigation_top.html" %}   
+	<script src="{% static "slider/bootstrap-slider.min.js" %}" ></script>
+	<link href="{% static "slider/bootstrap-slider.min.css"  %}" rel="stylesheet" type="text/css">	
+	<!-- Page Content -->
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel-body">
+<!--
+
+						<div class="panel panel-yellow">
+							<div class="panel-heading">
+								<b><i class="fa fa-warning">
+								ATTENTION</i> 
+								Veuillez ne pas fermer la fenêtre de l'Analysis Manager après avoir démarrer
+								une analyse.</b>
+							</div>
+							<div class="alert alert-danger">
+<p> La copie et l'envoie des données à Galaxy prend du temps. 
+Une page de confirmation s'affichera une fois l'operation terminée.</p>
+
+							</div>							
+						</div>
+-->
+
+						
+						
+						<center>
+								<form action="{% url 'sequencer:actualizedownloads' %}" method="post">
+								{% csrf_token %}
+							
+								<b>Afficher les <span id="ex6CurrentSliderValLabel"> <span id="ex6SliderVal">10</span> </span>  derniers runs du séquenceur proton HEGP PARIS </b>
+								&nbsp;&nbsp;&nbsp;&nbsp;	
+<input id="sliderData" type="text" data-slider-ticks="[10, 20, 30]" data-slider-ticks-snap-bounds="30" data-slider-step="1"
+								data-slider-ticks-labels='["10", "20", "30"]' name="sliderDataInput" value="MyExperimentsSlider.getValue()" data-slider-id='ex1Slider'/>
+								&nbsp;&nbsp;&nbsp;&nbsp;               
+								<button class="btn btn-default btn-lg" id="load" data-loading-text="<i class='fa fa-spinner fa-spin '></i>"  style="color: black;background-color: #669999;">
+								<i class="fa fa-refresh fa-fw" ></i>
+								</button>
+	
+<script>
+ 
+</script>
+
+
+   							
+<!--
+								<div class="stick">
+								<p style="float: left;">
+				<input id="sliderData" type="text" data-slider-ticks="[0, 10, 20, 30]" data-slider-ticks-snap-bounds="30"
+								data-slider-ticks-labels='["0", "10", "20", "30"]' name="sliderDataInput" value="MyExperimentsSlider.getValue()" data-slider-id='ex1Slider'/>
+												</p>
+								<p  style="float: right;">
+								<button class="btn btn-default btn-lg"  style="color: black;background-color: #669999;">
+								<i class="fa fa-refresh fa-fw" ></i>
+								</button>
+									</p>
+									</div>								
+-->
+								</form>
+
+						</center>
+						
+<script>
+	var MyExperimentsSlider = new Slider("#sliderData", {
+		ticks: [10, 20, 30],
+		ticks_labels: ["10", "20", "30"],
+		ticks_snap_bounds: 30,
+		value: 10,
+		step: 1
+	});
+	
+MyExperimentsSlider.on("slide", function(slideEvt) {
+	$("#ex6SliderVal").text(slideEvt);
+});
+
+</script>			
+<style type="text/css">
+	
+	#ex1Slider .slider-selection {
+	background: #BABABA;
+}
+	#ex1Slider .slider-handle {
+	background: grey;
+}
+
+	#slider12a .slider-track-high, #slider12c .slider-track-high {
+		background: red;
+	}
+	#slider12b .slider-track-low, #slider12c .slider-track-low {
+		background: red;
+	}
+	#slider12c .slider-selection {
+		background: green;
+	}
+	table.dataTable tr{ background-color:  	#669999; }
+	table.dataTable tr:nth-child(even)  { background-color: lightgrey;  }
+
+</style>
+<!--start wdgn FORMS FOR USER LOG IN-->
+<div class="dataTable_wrapper">
+	<table width="100%" class="table table-striped table-bordered table-hover" cellspacing="0" id="dataTables-example">
+	<thead>
+<!--
+    folder_name = models.TextField(primary_key=True)
+    filesystempath = models.TextField(default='no filesystempath')
+    reference = models.TextField(default='no reference')
+    status = models.TextField(default='no status')
+    timeStamp = models.TextField(default='no timeStamp')
+    timeToComplete = models.TextField( default='no timeToComplete')
+    backupOnNas = models.TextField(default='false')
+    backupValidate = models.TextField(default='false')		
+-->
+		<tr>
+			<th><font color = "white">Run </font></th>
+			<th><font color = "white">Status</font></th>                                            
+			<th><font color = "white">Date</font></th>
+			<th><font color = "white">espace disque proton</font></th>
+			<th><font color = "white">backup complet?</font></th>			
+			<th><font color = "white">lancer la copie sur le Nas</font></th>
+
+		</tr>
+	</thead>
+	<tbody>
+	{% if todownload_list %}
+		{% for Experiments in todownload_list %}
+		<tr class="odd gradeX">
+			<td>{{ Experiments.folder_name }}</td>
+			<td>{{ Experiments.status }}</td>
+			<td>{{ Experiments.timeStamp }}</td>
+			<td>{{ Experiments.diskusage }}</td>
+			<td>{{ Experiments.backupValidate }}</td>
+			<td>
+			<!--if user authenticated = galaxy user put the button in green-->
+				{% if Experiments.status == "Completed" and Experiments.backupValidate == "non"  %}
+<!--
+				rajouter ici un autre if si le run est en cours de chargement sur le nas
+				est le rendre indisponible si non
+-->
+				<form action="{% url 'sequencer:getSequenceData' Experiments.folder_name %}" method="post">
+					{% csrf_token %}
+				<button class="btn btn-success btn-lg" >
+				<i class="fa fa-times">
+					<font color = "white">
+					lancer copie</i>
+					</font>		
+					
+					</button>
+					</form>
+					 </td>
+				<!--else put it in white-->
+				{% else %}
+				{% if Experiments.backupValidate == "en cours" %}
+				
+				<button class="btn btn-success btn-lg disabled" >
+				<i class="fa fa-times">
+					<font color = "white">
+					En cours</i>
+					</font>		
+					</button> </td>
+				
+				<!--else put it in white-->
+				{% else %}				
+				
+								<button class="btn btn-default btn-lg disabled" style=" background-color: grey;">
+				<i class="fa fa-times">
+					<font color = "white">
+					{{ Experiments.backupValidate }}</i>
+					</font>		
+
+					</button> </td>
+				
+					
+				{% endif %}	
+				{% endif %}	
+
+									</tr>
+										{% endfor %}
+
+				{% endif %}										
+								</tbody>
+							</table>								
+							
+						<!-- /.table-responsive -->
+						</div>
+					</div>
+					<!-- /.panel-body -->
+				</div>
+			</div>
+			<!-- /.col-lg-12 -->
+		</div>
+		<!-- /.row -->
+	</div>
+	<!-- /.container-fluid -->
+<!--
+</div>
+-->
+<!-- /#page-wrapper -->	
+<!--Remaining section-->
+</div>
+<!-- /#wrapper -->
+
+<!-- DataTables CSS -->
+<script src="{% static "bower_components/jquery/dist/jquery.min.js" %}" ></script>
+
+<!-- DataTables Responsive CSS -->
+<link href="{% static "bower_components/datatables-responsive/css/dataTables.responsive.css"  %}" rel="stylesheet">
+<link href="https://cdn.datatables.net/select/1.2.0/css/select.dataTables.min.css" rel="stylesheet">
+
+<!-- DataTables JavaScript -->     
+<script src= "{% static "bower_components/datatables/media/js/jquery.dataTables.min.js"  %}" type="text/javascript"></script>
+<script src="{% static "bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js"  %}" type="text/javascript"></script>
+<script src="{% static "bower_components/datatables-responsive/js/dataTables.responsive.js"  %}" type="text/javascript"></script>
+    
+<!-- Custom Theme JavaScript -->
+<script src="{% static "dist/js/sb-admin-2.js"  %}" ></script>
+ <!--Custom toastr-->
+<script src="{% static "node_modules/toastr/build/toastr.min.js"  %}" ></script>
+<link href="{% static "node_modules/toastr/build/toastr.min.css"  %}" rel="stylesheet">
+
+ <script>
+	$(document).ready(function() {
+
+ $('.btn').on('click', function() {
+    var $this = $(this);
+  $this.button('loading');
+    setTimeout(function() {
+       $this.button('reset');
+   }, 10000);
+}); 
+
+toastr.options = {
+  "closeButton": true,
+  "debug": false,
+  "newestOnTop": false,
+  "progressBar": true,
+  "positionClass": "toast-top-left",
+  "preventDuplicates": false,
+  "onclick": null,
+  "showDuration": "1000",
+  "hideDuration": "1000",
+  "timeOut": "10000",
+  "extendedTimeOut": "1000",
+  "showEasing": "swing",
+  "hideEasing": "linear",
+  "showMethod": "fadeIn",
+  "hideMethod": "fadeOut"
+};
+	toastr.info("N'oubliez pas de selectionner à qui vous envoyez l'analyse");		
+		  $('#dataTables-example').DataTable({
+			 responsive: true,
+			  "bLengthChange": false,
+				"dom": 'lfrtip',
+				"oLanguage": {
+			"sSearch": "Nom du run: "
+			}					  
+		});		
+	});
+ </script>
+ 
+ <script>
+$('#myMod').modal('show'); 
+</script>
+
+<!--
+Copying '/srv/webmanager/static/slider/bootstrap-slider.css'
+Copying '/srv/webmanager/static/slider/bootstrap-slider.js'
+Copying '/srv/webmanager/static/slider/bootstrap-slider.min.css'
+Copying '/srv/webmanager/static/slider/bootstrap-slider.min.js'
+-->
+{% include "sequencer/footer.html" %}    	
+</body>
+</html>	
+

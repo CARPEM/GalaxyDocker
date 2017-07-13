@@ -19,7 +19,7 @@ from scp import SCPClient
 import os
 import logging
 import subprocess
-
+import time
 ##########################
 #URL SEQUENCER
 ##########################
@@ -604,6 +604,7 @@ def backgroundcopyDataBamtask(Expdict,currentExp,bamtoDownload,ssh,resultDirPath
 		mysampleDict[mysplit[0]]=str(mysplit[1]).replace(" ", "").upper()
 	
 	for bamPath in bamtoDownload:
+		time.sleep(20)
 		scp = SCPClient(ssh.get_transport())
 		ionTag=str("_".join(str(bamPath.split("/")[-1]).split("_")[0:2]))+".bam"
 		ionTagkey=str("_".join(str(bamPath.split("/")[-1]).split("_")[0:2]))

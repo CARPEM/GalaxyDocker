@@ -90,7 +90,44 @@ class UserCommonJobs(models.Model):
     
     def __str__(self):
         return (self.job_user_email.user_email +" "+self.job_tool_id.primary_name+" "+self.job_params)
+# Create your models here.
+class toDownloads(models.Model):
+	#~ text do not have limits
+    folder_name = models.TextField(primary_key=True)
+    filesystempath = models.TextField(default='no filesystempath')
+    reference = models.TextField(default='no reference')
+    status = models.TextField(default='no status')
+    timeStamp = models.TextField(default='no timeStamp')
+    timeToComplete = models.TextField( default='no timeToComplete')
+    backupOnNas = models.TextField(default='false')
+    backupValidate = models.TextField(default='false')
+    diskusage = models.TextField(default='data 0')
+    
+    def __str__(self):
+        return self.filesystempath +str(self.reference) + str(self.timeStamp)
 
+class savedNGSData(models.Model):
+	#~ text do not have limits
+    filesystempath = models.TextField(primary_key=True)
+    folder_name = models.TextField(default='no filesystempath')
+    status = models.TextField(default='no status')    
+    dataDictionnary = models.TextField(default='no dictionnary')    
+    #~ bamData = models.TextField(default='no reference')
+    #~ covData = models.TextField(default='no status')
+    #~ vcfData = models.TextField(default='no timeStamp')
+    def __str__(self):
+        return self.filesystempath +str(self.folder_name) + str(self.status)
+
+class NGSBamData(models.Model):
+    #~ text do not have limits
+    ionTag = models.TextField(default='no tag')
+    sampleName = models.TextField(default='no sample name')
+    bam_path = models.TextField(default='no path')
+    experienceName = models.ForeignKey(savedNGSData, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.bam_path
+        
 class GalaxyJobs(models.Model):
     #~ Put here info about tools state tools info tools id such as version and so and so
     tag_id=models.CharField(max_length=200,default='no_tag',primary_key=True) #personal
@@ -105,7 +142,8 @@ class GalaxyJobs(models.Model):
     history_today = models.CharField(max_length=200,default='no_day')#from GALAXY
     history_percent_complete = models.CharField(max_length=200,default='no_complete')#from GALAXY
     #a comma separated list of ids
-    list_experimentRawData = models.ManyToManyField(ExperimentRawData) #from ExperimentRawData
+    #~ list_experimentRawData = models.ManyToManyField(ExperimentRawData) #from ExperimentRawData
+    list_experimentRawData = models.ManyToManyField(NGSBamData) #from ExperimentRawData
     history_datasets_id = models.TextField(default='no_datasets')#from GALAXY
     history_download = models.BooleanField(default=False)#from GALAXY (download results)
     #~ history_upload = models.BooleanField(default=False)#from GALAXY (upload rawdata)
@@ -116,7 +154,8 @@ class GalaxyJobs(models.Model):
     #~ Les donnees sont chargees dans galaxy
     progression = models.CharField(max_length=200,default='suspendu') 
     galaxy_dictionnary=  models.TextField( default='no dict')
-    
-    
+        
     def __str__(self):
         return ("JOB TAG :"+self.tag_id+"\nHISTORY NAME : "+self.history_name+"\nCREATED FOR USER : "+self.history_user_email.user_email)
+
+

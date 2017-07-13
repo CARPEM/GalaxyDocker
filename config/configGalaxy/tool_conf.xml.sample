@@ -15,8 +15,8 @@
 		<tool file="samtools_docker/samtools_sort/samtools_sort.xml" />
 		<tool file="samtools_docker/samtools_bedcov/samtools_bedcov.xml" />
 		</section>	
-		<label id="otherotherTools" text="Automo" />	
-		<section id="ANALYSEAUTO" name="Analyse Automatique" style="">
+		<label id="otherotherTools" text="Analysis Manager" />	
+		<section id="ANALYSEAUTO" name="Automatic Analysis" style="">
 				<tool file="automatique/automatique.xml" />
 		</section> 	
 <label id="basicTools" text="Galaxy Tools" />

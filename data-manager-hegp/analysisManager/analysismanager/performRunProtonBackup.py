@@ -14,29 +14,29 @@ from shutil import copyfile
 ##########################
 #URL PROTON
 ##########################
-from protonprojects.GlobalVariables import proton_base_url 
-from protonprojects.GlobalVariables import idpr
-from protonprojects.GlobalVariables import proton_severName
+from sequencer.GlobalVariables import sequencer_base_url 
+from sequencer.GlobalVariables import sequencer_password
+from sequencer.GlobalVariables import sequencer_severName
 ##########################
 #URL GALAXY
 ##########################
-from protonprojects.GlobalVariables import  galaxy_base_url
-from protonprojects.GlobalVariables import  apiKey
+from sequencer.GlobalVariables import  galaxy_base_url
+from sequencer.GlobalVariables import  apiKey
 ##########################
 #NAs DIr folder
 ##########################
-from protonprojects.GlobalVariables import nasInput
-from protonprojects.GlobalVariables import CNVfolderName
-from protonprojects.GlobalVariables import PlasmafolderName
-from protonprojects.GlobalVariables import nasResults
-from protonprojects.GlobalVariables import nasBackupFolder
+from sequencer.GlobalVariables import nasInput
+from sequencer.GlobalVariables import CNVfolderName
+from sequencer.GlobalVariables import plasmaFolderName
+from sequencer.GlobalVariables import nasResults
+from sequencer.GlobalVariables import nasBackupFolder
 import logging
 ##########################
 #LOGGER
 ##########################
 logger = logging.getLogger(__name__)
-logging.basicConfig(format='%(asctime)s -- %(name)s - %(levelname)s : %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p',level=logging.INFO,filename='/nas_backup/log_copybackupnew/backupNGS_new_run156A160.log')
-#~ logging.basicConfig(format='%(asctime)s -- %(name)s - %(levelname)s : %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p',level=logging.INFO)
+#~ logging.basicConfig(format='%(asctime)s -- %(name)s - %(levelname)s : %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p',level=logging.INFO,filename='/nas_backup/log_copybackupnew/backupNGS_new_run156A160.log')
+logging.basicConfig(format='%(asctime)s -- %(name)s - %(levelname)s : %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p',level=logging.INFO)
 
 #logger.setLevel(logging.DEBUG)
 
@@ -87,7 +87,8 @@ def CopydataAgain(inputData,outputData,filetocopy,originalchecksum,checksumBam,i
 
 #get checksum for one file			
 def getmd5sum(pathdodata,sshProton):
-
+	print "From getmd5sum"
+	print(pathdodata)
 	ssh_stdin, ssh_md5sum_stdout, ssh_stderr = sshProton.exec_command(" md5sum "+pathdodata)
 	bamchecksum=""
 	originalFile=""
@@ -306,9 +307,12 @@ def backupAllVariantAnalysis(variantCallerDict,sshProton,pathtovcf,failedFileToR
 		scp=SCPClient(sshProton.get_transport())
 		print("key")
 		print "Variant CAller starts"
+		print(str(variantCall).split("/")[-1])
 		thisvariant=pathtovcf+"/"+str(variantCall).split("/")[-1]
 		if not os.path.exists(thisvariant):
 			os.makedirs(thisvariant)
+		print "VCF run getmd5sum"
+		print(data['vcf'])
 		bamchecksum,originalFile=getmd5sum(data['vcf'],sshProton)
 		print(bamchecksum)
 
@@ -474,7 +478,7 @@ def performWholeRunBackup(runNametobackup):
 	logger.debug("Start connection to our proton :")
 	logger.debug("##########################")	
 	sshProton=ProtonCommunication_data_manager.sshConnection(
-	proton_severName,idpr,idpr)
+	sequencer_severName,sequencer_password,sequencer_password)
 	logger.debug("##########################")
 	logger.debug("list Bamfile")
 	logger.debug("##########################")
@@ -513,6 +517,39 @@ def performWholeRunBackup(runNametobackup):
 	backupAllCovariantAnalysis(coverageAnalysisDict,pathtocov,sshProton,checksumcov,failedFileToREDO) 
 	backupAllVariantAnalysis(variantCallerDict,sshProton,pathtovcf,failedFileToREDO,checksumvcf)
 	backupAllBamFileAnalysis(bamfileList,sshProton,checksumBam,pathtobam,failedFileToREDO)
+
+		#~ 
+	#~ for bam in bamfileList:
+                #~ scp=SCPClient(sshProton.get_transport())
+		#~ print ("Treat Bam file")
+		#~ ssh_stdin, ssh_md5sum_stdout, ssh_stderr = sshProton.exec_command(" md5sum "+bam)
+		#~ bamchecksum=""
+		#~ originalFile=""
+		#~ for checksum in ssh_md5sum_stdout.readlines():
+			#~ bamchecksum=str(checksum.rstrip().split(" ")[0])
+			#~ originalFile=str(checksum.rstrip().split(" ")[1])		
+		#~ ionTag=str("_".join(str(bam.split("/")[-1]).split("_")[0:2]))+".bam"
+#~ 
+		#~ 
+		#~ scp.get(bam,pathtobam+"/"+ionTag)
+		#~ jobdone=False
+		#~ while jobdone!=True:
+			#~ print "This prints 40 sec. and wait for data to be done"+ionTag
+			#~ time.sleep(40) 
+			#~ jobdone=True
+				#~ 
+		#~ bashCommand1 = "md5sum "+pathtobam+"/"+ionTag
+                #~ time.sleep(40)
+                #~ print "process the data checksum of the data hope no bug"
+		#~ process1 = subprocess.Popen(bashCommand1.split(), stdout=subprocess.PIPE)
+		#~ copybam=process1.communicate()[0].split(" ")[0]
+		#~ if	(copybam==bamchecksum) :
+			#~ print("COMPLETE")
+			#~ 
+			#~ checksumBam.write(ionTag+ " COMPLETE " +str(bamchecksum)+"\n")
+		#~ else :
+			#~ CopydataAgain(bam,pathtobam+"/"+ionTag,ionTag,bamchecksum,checksumBam)
+                #~ scp.close()
 	checksumBam.close()
 	checksumcov.close()
 	checksumvcf.close()

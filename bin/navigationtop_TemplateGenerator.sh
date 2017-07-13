@@ -64,10 +64,15 @@ cat  << EOF
 		<ul class="nav navbar-top-links navbar-left">
 		
 <li><div class="dropdown">
-	<a href={% url 'sequencer:projects' %}><font color = "white">HEGP Analysis Manager v1.1</font></a>
+	<a href={% url 'sequencer:savedData' %}><font color = "white">HEGP Analysis Manager v1.1</font></a>
 </div>
+</li>
 
-			</li>
+			
+<li><div class="dropdown">
+	<a href={% url 'sequencer:downloadsdata' %}><font color = "white">Download</font></a>
+</div>
+</li>
 
 		</ul>
 		<ul class="nav navbar-top-links navbar-right">
@@ -75,7 +80,7 @@ cat  << EOF
 			<li><div class="dropdown">
 				<a href="$GalaxyServer/">				
 					<img src="{% static "sequencer/galaxyIcon_noText.png" %}" alt="My image"/>
-				<font color = "white">Retour vers Galaxy</font></a>
+				<font color = "white">Go back to Galaxy</font></a>
 				</div>
 			</li> 
 			<li>
@@ -84,9 +89,9 @@ cat  << EOF
 								<i class="fa fa-user fa-fw" style="color: black;"></i> <i class="fa fa-caret-down" style="color: black;"></i>
 									<font color = "white">
 										{% if user.is_authenticated %}
-											Envoyer à {{user.username }}
+											Send to {{user.username }}
 										{% else %}
-											Sélectionnez un utilisateur											
+											Select a user											
 										{% endif %}
 									</font>
 							</a>
@@ -94,9 +99,9 @@ cat  << EOF
 <!--
 								<li><a href="#"><i class="fa fa-user fa-fw" style="color: black;"></i> 
 								{% if user.is_authenticated %}
-									Envoyer à  {{user.username }}
+									Send to  {{user.username }}
 								{% else %}
-									Sélectionnez un utilisateur
+									Select a user
 								{% endif %}	   
 									</a>
 								</li>
@@ -144,33 +149,12 @@ cat  << EOF
 								<li class="divider"></li>
 									{% endfor %}
 								{% else %}	
-								
-
-
-
-
-
-
-								
-								
-								
-								
-								
-									
-							<p>pas d'utilisateur</p>
+							<p>no user</p>
 							{% endif %}	                                         
 							</ul>
 						</div>
 							
 			</li> 
-   
-			
-
-<!--
-			<li>
-				<a href={% url 'sequencer:projects' %}><i class="fa fa-dashboard fa-fw"></i>Run</a>
-			</li>
--->
 		</ul>
 		<!-- /.navbar-static-side -->
 	</nav>      

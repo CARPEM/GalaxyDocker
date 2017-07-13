@@ -109,8 +109,10 @@ else
     
     echo "start some nohup command to be sure the Galaxy server is ready"
     touch /results/galaxyReady.txt    
-    nohup docker pull wdcarpem/samtools &
-    nohup docker pull rocker/shiny &
+    #~ nohup docker pull wdcarpem/samtools &
+    #~ nohup docker pull rocker/shiny &
+    nohup docker load -i /images/inspectTest/samtools_idxstats.tar &
+    nohup docker load -i /images/multiInput/samtools_bedcov.tar & 
 
 fi
 

@@ -1,14 +1,15 @@
 from datamanagerpkg import ProtonCommunication_data_manager
 from datamanagerpkg import GalaxyCommunication_data_manager
-from .models import Experiments, GalaxyUsers 
-from .models import GalaxyJobs, ExperimentRawData
-from .models import UserCommonJobs,Supportedfiles
+from .models import Experiments, GalaxyUsers ,toDownloads 
+from .models import GalaxyJobs, ExperimentRawData , savedNGSData
+from .models import UserCommonJobs,Supportedfiles, NGSBamData
 from .models import Workflows,WorkflowsTools
 from pprint import pprint
 import logging
 import json
 import os
-
+import time
+import requests
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 #~ from .forms import UserForm
@@ -24,6 +25,7 @@ from email import encoders
 #URL SEQUENCER
 ##########################
 from GlobalVariables import sequencer_base_url 
+from GlobalVariables import sequencer_root_base_url 
 from GlobalVariables import sequencer_user
 from GlobalVariables import sequencer_password
 from GlobalVariables import sequencer_severName
@@ -51,7 +53,10 @@ from GlobalVariables import toolsInformation
 from GlobalVariables import smtpServerAphp
 from GlobalVariables import smtpPortServer
 from GlobalVariables import fromAddrOfficial
- 
+#~ import Prod_performRunProtonBackup
+import local_ProtonBackup
+#~ pathtoNasbackup="/nas_backup/backupNGS_new/"
+pathtoNasbackup="/nas_backup"
 ##########################
 #LOGGER
 ##########################
@@ -63,16 +68,13 @@ tools_default = ["ucsc_table_direct1","CONVERTER_wiggle_to_interval_0","MAF_To_B
 
 def sendmailwrapper(fromaddr,toaddr,subject,body) :
     msg = MIMEMultipart()
-
     msg['From'] = fromaddr
     msg['To'] = toaddr
     #~ msg['Subject'] = "SUBJECT OF THE EMAIL"
-    msg['Subject'] = subject
-    
+    msg['Subject'] = subject  
     #~ body = "TEXT YOU WANT TO SEND"
     body = body
     msg.attach(MIMEText(body, 'html'))
-
     server = smtplib.SMTP(smtpServerAphp, smtpPortServer)
     server.starttls()
     #~ server.login(fromaddr, "YOUR PASSWORD")
@@ -80,8 +82,206 @@ def sendmailwrapper(fromaddr,toaddr,subject,body) :
     server.sendmail(fromaddr, toaddr, text)
     server.quit()
     
+def Download_Data_clean():
+    #here again controle the state of the object
+    toDownloadsData=toDownloads.objects.all()
+    for dataRun in toDownloadsData :
+        if dataRun.backupValidate == "en cours" :
+            dataRun.backupValidate="en traitement"
+            dataRun.save()
+            #forced the copy of the run in order to be sure of the data integrity
+            for runcopy in range(0,5):
+                local_ProtonBackup.performWholeRunBackup(str(dataRun.folder_name))
+            #~ create the file CompleteData.txt
+            completData=open(pathtoNasbackup+str(dataRun.folder_name)+'/CompletedDownload.txt','w')
+            completData.close()
+            dataRun.backupValidate="Termin&egrave"
+            dataRun.backupOnNas="True"
+            dataRun.save()
+            #~ Creation of the savedNGSData object
+            try:
+                thisNGSData = savedNGSData.objects.get(filesystempath=str(pathtoNasbackup)+"/"+str(dataRun.folder_name))
+            except savedNGSData.DoesNotExist:
+                thisNGSData = None
+            if  thisNGSData == None: 
+                thisNGSData = savedNGSData.objects.create(
+                filesystempath=str(pathtoNasbackup)+"/"+str(dataRun.folder_name),
+                folder_name=str(dataRun.folder_name),
+                status="complete")
+                thisNGSData.save()  
+                thisNGSData.dataDictionnary=buildSampleNameDict(thisNGSData.folder_name)     
+                thisNGSData.save()  
+                buildBamDict(thisNGSData)
+            users=GalaxyUsers.objects.all()
+            body="""<p>Votre run  """+str(dataRun.folder_name) +""" est copi&eacute pour analyse plasma</p><p style="color:#2e1cb2";> """
+            for thisUser in users :            
+                sendmailwrapper(fromAddrOfficial,thisUser.user_email,"Copie de run Disponible",body)
+            
+
+#~ pathtoNasbackup
+def updateBamStatus():
+    AllNgsData=toDownloads.objects.all()
+    for thisBackup in AllNgsData :
+        #~ thisBackup.dataDictionnary=buildSampleNameDict(thisBackup.filesystempath+"/cov/",thisBackup.folder_name)
+        thisBackup.dataDictionnary=buildSampleNameDict(folder_name)
+        thisBackup.save()
+    buildBamDict(thisBackup)
+     
+#######
+def buildSampleNameDict(folderName):
+    withoutAuto=str(folderName).replace("Auto_","").rstrip()
+    #~ print(withoutAuto)
+    withoutAutoTmp=withoutAuto.split('_')    
+    cleanID=str("_".join(withoutAutoTmp[0:len(withoutAutoTmp)-1]))
+    resp = requests.get(sequencer_base_url+'/results/', auth=(sequencer_user,sequencer_password),params={"format": "json", "resultsName__endswith" : cleanID})
+    resp_json = resp.json()
+    #~ pprint(resp_json)
+    adress=sequencer_root_base_url+str(resp_json['objects'][0]['eas'])
+    #~ print 'this adress will be called to set up the sampleName'+adress
+    resp_eas = requests.get(adress, auth=(sequencer_user,sequencer_password),params={"format": "json"})
+    resp_eas_json = resp_eas.json()
+    #~ pprint(resp_eas_json)
+    sampleNameDict=dict()
+    for thisSampleName in resp_eas_json['barcodedSamples']:
+        #~ print resp_eas_json['barcodedSamples'][thisSampleName]['barcodes']
+        if len(resp_eas_json['barcodedSamples'][thisSampleName]['barcodes'])==1:
+            sampleNameDict[resp_eas_json['barcodedSamples'][thisSampleName]['barcodes'][0]]=thisSampleName
+        else:
+            for ionTagElement in resp_eas_json['barcodedSamples'][thisSampleName]['barcodes'] :
+                sampleNameDict[ionTagElement]=thisSampleName
+                print "ionTagElement" +str(ionTagElement)
+    return(sampleNameDict)
+
+def buildBamDict(thisData):
+    onlybamfiles = [thisData.filesystempath+"/bam/"+f for f in os.listdir(thisData.filesystempath+"/bam/") if os.path.isfile(thisData.filesystempath+"/bam/"+f)]
+    onlybamfiles_clean = [f for f in onlybamfiles if f.endswith(".bam")]
+    for thisBam in onlybamfiles_clean:
+        try :
+            tryBam = NGSBamData.objects.get(bam_path=str(thisBam))
+        except NGSBamData.DoesNotExist:
+            tryBam = None
+        if  tryBam == None:
+            ionExpressTag=str(thisBam).split("/")
+            thisionTag=str(ionExpressTag[-1].split('.')[0])
+            if thisionTag in json.loads(thisData.dataDictionnary):
+                localDict=json.loads(thisData.dataDictionnary)
+                newBam = NGSBamData(bam_path=str(thisBam),
+                experienceName=thisData,
+                ionTag=thisionTag,
+                sampleName= localDict[thisionTag])
+                newBam.save()
+            else:
+                print "key error, the key was not found on the dictionnary for sample"
+                print thisBam+ "in run "+thisData.filesystempath
+                newBam = NGSBamData(bam_path=str(thisBam),
+                experienceName=thisData,
+                ionTag=thisionTag,
+                sampleName= thisionTag+"noSampleName")
+                newBam.save()
+    thisData.save()
+
+def Download_NGS_RawData():
+    logger.info("##########################")
+    ticket_histories=GalaxyJobs.objects.all()
+    for job in ticket_histories :
+        #~ if job.progression=="suspendu":   
+        #~ if job.progression=="suspendu":   
+        if job.history_download==False:   
+            if job.progression=="suspendu":
+                job.progression="Download_in_progress"
+                job.save()                
+                bamtoDl=[]
+                logger.info("Build the bamtoDL list for  : %s",job.tag_id )                 
+                for bam in job.list_experimentRawData.all():
+                    bamtoDl.append(bam.bam_path)
+                #~ do not forgot to close the ssh connection()    
+                #~ the data are downloaded, now you can create a new
+                #~ Galaxy history
+                job.history_download=True
+                job.progression="Download_complete"
+                #~ job.galaxy_dictionnary=json.dumps(z)
+                job.save()
+                job.progression="chargement_dans_galaxy"
+                job.save()            
+                logger.info("##########################")    
+                logger.info("start Galaxy job")
+                experimentsDict=json.loads(job.galaxy_dictionnary) 
+                #~ z = experimentsDict.copy()
+                #~ z.update(json.loads(job.galaxy_dictionnary)) 
+                experimentsDict['resultsName']=job.resultsName
+                experimentsDict['bamForPlasma']=bamtoDl
+                job.galaxy_dictionnary=json.dumps(experimentsDict)                
+                #~ confirmation telechargement 
+                #~ sendmailwrapper(fromAddrOfficial,job.history_user_email.,subject,body)
+                historyPlasma=GalaxyCommunication_data_manager.mainSamtools_fromNGSData(experimentsDict,galaxy_base_url,job.history_user_email.user_apikey,plasmaFolderName)
+                #~ historyPlasma=GalaxyCommunication_data_manager.mainPlasma_fromNGSData(experimentsDict,galaxy_base_url,job.history_user_email.user_apikey,plasmaFolderName)
+                job.history_id=historyPlasma['id']
+                job.history_name=historyPlasma['name']
+                job.history_today=historyPlasma['today']
+                job.progression="chargement_dans_galaxy_complet"
+                #~ confirmation lancement de galaxy
+                job.save()
+                body="""<p>Votre analyse &agrave; &eacute;t&eacute; ajout&eacute;e &agrave; l'historique:\n</p><p style="color:#2e1cb2";> """+job.history_name+""".\n</p>
+                """+str(job.list_experimentRawData.count()) +""" &eacute;chantillon(s) est(sont) en cours de traitement. Vous pourrez les trouver en cliquant sur le lien
+                <p><a href='"""+galaxy_base_url+"""/history/view_multiple'> <img src="http://www.carpem.fr/wp-content/themes/carpem/img/logo.gif" /></a></p>
+                """
+                sendmailwrapper(fromAddrOfficial,str(job.history_user_email.user_email)," Analyse Plasma dans Galaxy",body)
+             #~ will be put in other function
+            else:
+                logger.info("##########################")    
+                logger.info("Ce Job est deja pris en charge dans une task de telechargement de donnees")				
+                continue
 
 
+
+#~ def buildSampleNameDict(runPath):
+    #~ onlyCovDir = [runPath+"/"+f for f in os.listdir(runPath) if os.path.isdir(runPath+"/"+f)]
+    #~ bcsummaryfile = [onlyCovDir[0]+"/"+f for f in os.listdir(onlyCovDir[0]) if f.endswith('.bc_summary.xls')]
+    #~ sampleNameDict=dict()
+    #~ with open(onlyCovDir[0]+'/startplugin.json') as rawJson:
+        #~ json_data = json.load(rawJson)
+    #~ for sampleNameTag in json_data['plan']['barcodedSamples'] :
+        #~ sampleNameDict[json_data['plan']['barcodedSamples'][sampleNameTag]['barcodes'][0]]=sampleNameTag
+    #~ return(sampleNameDict)
+    #~ d['plan']['barcodedSamples']['17PG289']['barcodes'][0]
+     
+    #~ with open(onlyCovDir[0]+'/results.json') as rawJson:
+        #~ json_data = json.load(rawJson)
+    #~ for ionXpressTag in json_data['barcodes'] :
+        #~ sampleNameDict[ionXpressTag]=json_data['barcodes'][ionXpressTag]['Sample Name']
+
+    
+#~ d["barcodes"]['IonXpress_001']["Sample Name"]
+    #~ bcsummary=open(bcsummaryfile[0],'r').readlines()
+    #~ sampleNameDict=dict()
+    #~ for line in bcsummary:
+        #~ element=line.split("\t")
+        #~ if "Barcode" not in element[0]:
+            #~ sampleNameDict[element[0]]=element[1]
+            
+    #~ folder_name = models.TextField(primary_key=True)
+    #~ filesystempath = models.TextField(default='no filesystempath')
+    #~ reference = models.TextField(default='no reference')
+    #~ status = models.TextField(default='no status')
+    #~ timeStamp = models.TextField(default='no timeStamp')
+    #~ timeToComplete = models.TextField( default='no timeToComplete')
+    #~ backupOnNas = models.TextField(default='false')
+    #~ backupValidate = models.TextField(default='false')
+    #~ diskusage = models.TextField(default='data 0')
+    
+
+#~ def reloadStatus():
+    #~ savedData_list = savedNGSData.objects.all() 
+    #~ if len(savedData_list) != 0 :
+        #~ for localDir in savedData_list:
+            #~ thisDownloadData=""
+            #~ try :
+                #~ thisDownloadData=toDownloads.objects.get(folder_name=thisDownloadData['folder_name'])
+                #~ thisDownloadData.backupOnNas="True"
+                #~ thisDownloadData.save()
+            #~ except toDownloads.DoesNotExist :
+                #~ thisDownloadData = None
+  
 def Download_RawData():
     logger.info("##########################")
     ticket_histories=GalaxyJobs.objects.all()
@@ -128,8 +328,7 @@ def Download_RawData():
             experimentsDict=json.loads(job.galaxy_dictionnary) 
             #confirmation telechargement 
             #~ sendmailwrapper(fromAddrOfficial,job.history_user_email.,subject,body)
-
-            historyPlasma=GalaxyCommunication_data_manager.mainPlasma(experimentsDict,galaxy_base_url,job.history_user_email.user_apikey,plasmaFolderName)
+            historyPlasma=GalaxyCommunication_data_manager.mainPlasma_fromNGSData(experimentsDict,galaxy_base_url,job.history_user_email.user_apikey,plasmaFolderName)
             job.history_id=historyPlasma['id']
             job.history_name=historyPlasma['name']
             job.history_today=historyPlasma['today']

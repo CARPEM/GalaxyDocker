@@ -1,0 +1,72 @@
+{
+    "a_galaxy_workflow": "true", 
+    "annotation": "a demo workflow tool", 
+    "format-version": "0.1", 
+    "name": "demo_samtools", 
+    "steps": {
+        "0": {
+            "annotation": "", 
+            "content_id": null, 
+            "id": 0, 
+            "input_connections": {}, 
+            "inputs": [
+                {
+                    "description": "", 
+                    "name": "bam file"
+                }
+            ], 
+            "label": null, 
+            "name": "Input dataset", 
+            "outputs": [], 
+            "position": {
+                "left": 121.41668701171875, 
+                "top": 188.9166717529297
+            }, 
+            "tool_errors": null, 
+            "tool_id": null, 
+            "tool_state": "{\"name\": \"bam file\"}", 
+            "tool_version": null, 
+            "type": "data_input", 
+            "uuid": "bea8deb5-88b6-4f5a-9a62-1061c4bc905f", 
+            "workflow_outputs": []
+        }, 
+        "1": {
+            "annotation": "result file for the user", 
+            "content_id": "samtools_idxstats", 
+            "id": 1, 
+            "input_connections": {
+                "input": {
+                    "id": 0, 
+                    "output_name": "output"
+                }
+            }, 
+            "inputs": [
+                {
+                    "description": "runtime parameter for tool IdxStats", 
+                    "name": "input"
+                }
+            ], 
+            "label": null, 
+            "name": "IdxStats", 
+            "outputs": [
+                {
+                    "name": "output", 
+                    "type": "tabular"
+                }
+            ], 
+            "position": {
+                "left": 326.41668701171875, 
+                "top": 282.91668701171875
+            }, 
+            "post_job_actions": {}, 
+            "tool_errors": null, 
+            "tool_id": "samtools_idxstats", 
+            "tool_state": "{\"input\": \"{\\\"__class__\\\": \\\"RuntimeValue\\\"}\", \"__rerun_remap_job_id__\": null, \"__page__\": 0}", 
+            "tool_version": "2.0", 
+            "type": "tool", 
+            "uuid": "13515e52-c7f8-41f5-946e-53fe1c3759bd", 
+            "workflow_outputs": []
+        }
+    }, 
+    "uuid": "bc7ac0fc-7040-4530-85f6-1ca34b403909"
+}

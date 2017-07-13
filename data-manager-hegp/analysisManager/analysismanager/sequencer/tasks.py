@@ -24,9 +24,23 @@ def task_Download_RawData():
     """
     logger.info("start download history")
 
-    localFunctions.Download_RawData()
+    localFunctions.Download_NGS_RawData()
     logger.info("end download")
 
+#~ @periodic_task(
+    #~ run_every=(crontab(minute='*/1')),
+    #~ name="task_Download_RawData",
+    #~ ignore_result=True
+#~ )
+#~ def task_Download_RawData():
+    #~ """
+    #~ start download rawdata from sequencer
+    #~ """
+    #~ logger.info("start download history")
+#~ 
+    #~ localFunctions.Download_RawData()
+    #~ logger.info("end download")
+    #~ 
 
 @periodic_task(
     run_every=(crontab(minute='*/1')),
@@ -41,16 +55,33 @@ def task_sendReminder():
     localFunctions.sendReminder_JobIsDone()
     logger.info("end Galaxy Jobs")
 
-
 @periodic_task(
     run_every=(crontab(minute='*/1')),
-    name="task_checkUsersJobs",
+    name="task_Download_Data_clean",
     ignore_result=True
 )
-def task_checkUsersJobs_cron():
+def task_Download_Data_clean():
     """
-    check each user jobs
+    Start to download data from the proton directly by looking at the file name.
     """
-    logger.info("check user galaxy Jobs")
-    localFunctions.checkUsersJobs()
-    logger.info("check user galaxy Jobs")
+    logger.info("Review state of data to download")
+    localFunctions.Download_Data_clean()
+    logger.info("end of the review")
+
+
+
+
+
+#~ 
+#~ @periodic_task(
+    #~ run_every=(crontab(minute='*/1')),
+    #~ name="task_checkUsersJobs",
+    #~ ignore_result=True
+#~ )
+#~ def task_checkUsersJobs_cron():
+    #~ """
+    #~ check each user jobs
+    #~ """
+    #~ logger.info("check user galaxy Jobs")
+    #~ localFunctions.checkUsersJobs()
+    #~ logger.info("check user galaxy Jobs")

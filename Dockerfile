@@ -14,7 +14,6 @@ COPY config/configGalaxy/startup /usr/bin/startup
 RUN chmod 777 /usr/bin/startup
 
 RUN cat /etc/sudoers |awk '{print $0}END{print "galaxy  ALL = (root) NOPASSWD: SETENV: /usr/bin/docker \nroot  ALL = (root) NOPASSWD: SETENV: /usr/bin/docker \ngalaxy ALL = NOPASSWD : ALL"}' > /etc/sudoers 
-#    mkdir /etc/systemd/system/docker.service.d
 
 RUN mkdir /images
 WORKDIR /galaxy-central/

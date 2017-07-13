@@ -18,22 +18,22 @@ cat  << EOF
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-lg-12">
-					<h1 class="page-header">Plasma Mutation</h1>
+					<h1 class="page-header">Samtools Idxstat</h1>
 					<div class="panel panel-green">
 					{% if current_exp %}
 						<div class="panel-heading">
 						{% if user.is_authenticated  %}
 						{% if experimentsDict %}
-							<p><b>Analyse plasma pour le run {{ current_exp.run_name }}</b></p>
+							<p><b>Samtools Idxstat Analysis for run {{ current_exp.run_name }}</b></p>
 						</div>
 						<div class="panel-body">
 								<div class="alert alert-success">
-									<p>Les résultats ont été envoyé à l'utilisateur  <font  color = "black">{{user.username}}</font> </p>
-									<p>Un mail de suivi des opérations vous sera envoyé à votre adresse mail </p>
+									<p>Results will be send to <font  color = "black">{{user.username}}</font> </p>
+									<p>a mail will be send to you </p>
 								</div>	
 																						
 								<div class="alert alert-success">
-									<p><b>Détaille de vos analyses:  </b></p>								
+									<p><b>Analyse details:  </b></p>								
 									{% for bam in experimentsDict %}
 										<p>{{bam }}</p>
 										<p>---</p>
@@ -42,7 +42,7 @@ cat  << EOF
 						</div>
 						<div class="panel panel-primary">
 						<div class="panel-heading" style="background-color: #669999;">
-							<p><b>Retrouvez vos résultats en suivant le lien ci-dessous </b></p>
+							<p><b>Follow the link to find your results </b></p>
 						</div>
 						<div class="panel-body">
 							<div class="alert alert-info">

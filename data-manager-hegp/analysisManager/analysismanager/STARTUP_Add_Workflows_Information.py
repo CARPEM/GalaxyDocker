@@ -149,11 +149,15 @@ def AddaWorkflowTool(this_tool):
                     newfile.save()  
                     newtool.outputlist.add(newfile)
                     newtool.save()
-
-
 if __name__ == "__main__":
-    #~ pathToWorkflow='/nas_Dir/workflow/Galaxy-Workflow-IdxStat_Samtools.ga'
+    print("#######################")
+    print("#######################")
+    pathTosamtools='/nas_Dir/workflow/Galaxy-Workflow-demo_samtools.ga'
+    print("Upload a specific workflow to the database : demo_samtools")
+    uploadAWorkflowToDatabase(pathTosamtools)
+    print("#######################")
+    print("#######################")
     pathToWorkflow='/nas_Dir/workflow/Galaxy-Workflow-Plasma_mutation.ga'
-    print("Upload a specific workflow to the database")
-    uploadAWorkflowToDatabase(pathToWorkflow)
+    print("Upload a specific workflow to the database : Plasma_mutation")
+    uploadAWorkflowToDatabase(pathToWorkflow)    
     print("JOB DONE")
