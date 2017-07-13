@@ -90,7 +90,7 @@ sh cleanTmpdata.sh
 ## 2 : Tutorial
 --------------------
 
-### 2.1 : Build a galaxy xml with dockertools2galaxy
+#### 2.1 : Build a galaxy xml with dockertools2galaxy
 
 
 (a) Download the image biocontainers/samtools:1.3.1 with 
