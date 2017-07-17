@@ -43,7 +43,7 @@ def CopydataAgain(inputData,outputData,filetocopy,originalchecksum,checksumBam,i
 	print "input data rich a timeout socket exception will retry the job"
 	print "filename:"+inputData
 	print "outputdata:"+outputData
-	if os.path.exists(outputData):
+	if os.path.exists(outputData) and os.path.isfile(outputData):
 		os.remove(outputData)
 	print "sleep 10 seconds and redo the experiment"
 	time.sleep(10)
@@ -315,7 +315,7 @@ def backupAllVariantAnalysis(variantCallerDict,sshProton,pathtovcf,failedFileToR
 					failedFileToREDO.write("this file failed to upload :"+str(thisvariant)+"/"+ data['vcf'].split("/")[-1]  +"\t"+str(bamchecksum)+"\n")
 					scp.close()
 					scp=SCPClient(sshProton.get_transport())
-					CopydataAgain(data['vcf'],thisvariant,data['vcf'].split("/")[-1],bamchecksum,checksumvcf,1,sshProton)
+					CopydataAgain(data['vcf'],str(thisvariant)+"/"+ data['vcf'].split("/")[-1],data['vcf'].split("/")[-1],bamchecksum,checksumvcf,1,sshProton)
 					scp.close()
 					scp=SCPClient(sshProton.get_transport())
 		scp.close()
@@ -451,8 +451,7 @@ def performWholeRunBackup(runNametobackup):
 	coverageAnalysisDict=buildcoverageAnalysisFile(sshProton,runNametobackup)
 	variantCallerDict=buildVariantCallerFile(sshProton,runNametobackup)
 	#create run folder
-	#~ pathtoResult="/nas_backup/backupNGS_new/"+runNametobackup.rstrip()
-	pathtoResult="/nas_backup/"+runNametobackup.rstrip()
+	pathtoResult="/nas_backup/backupNGS_new/"+runNametobackup.rstrip()
 	if not os.path.exists(pathtoResult):
 		os.makedirs(pathtoResult)
 	#create bam folder
