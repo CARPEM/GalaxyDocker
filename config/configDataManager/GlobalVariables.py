@@ -14,8 +14,8 @@ sequencer_ExperimentLimit=2
 #galaxydev
 galaxy_base_url='http://127.0.0.1:8123'
 apiKey="yourspecificmasterapikey"
-http_proxy="yourProxyParameter"
-https_proxy="yourProxyParameter"
+http_proxy="yourProxy"
+https_proxy="yourProxy"
 #either an IP or a name to access the computer on the network 
 analysisManagerAccessionAdress="127.0.0.1"
 DEBUG_AnalysisManager=True
@@ -23,7 +23,7 @@ GALAXY_BRAND="HEGP"
 ##########################
 #Nas Directory path
 ##########################
-inputAbsolutPath="/nas_Dir/"
+inputAbsolutPah="/nas_Dir/"
 nasInput="/nas_Dir/INPUT/"
 CNVfolderName="/CNV/"
 plasmaFolderName="/bam/"

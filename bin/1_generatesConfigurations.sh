@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bqsh
 #WDN
 #templates generations
 
@@ -44,7 +44,15 @@ cat ../templates/end_automatique.xml >>../tools/automatique/automatique.xml
 #######################
 #Generates the docker-compose from the template file
 #######################
+if [ -z "$http_proxy" ]; then
+echo "htttp proxy is not defined"
+sh dockercomposeNoProxy_TemplateGenerator.sh $POSTGRES_PASSWORD $DB_redis_port $DB_port $GALAXY_BRAND $apiKey $genomes_PATH $registry_PATH $images_PATH $REALDATA_PATH $REALRESULTS_PATH $REALLOGS_PATH $REALRESULTS_PATH > ../docker-compose.yml
+
+else
+echo "http proxy is defined"
 sh dockercompose_TemplateGenerator.sh $POSTGRES_PASSWORD $http_proxy $https_proxy $GALAXY_BRAND $apiKey $genomes_PATH $registry_PATH $images_PATH $REALDATA_PATH $REALRESULTS_PATH $REALLOGS_PATH $REALRESULTS_PATH $DB_port $DB_redis_port > ../docker-compose.yml
+
+fi
 echo "#######################"
 echo "Go back to the project home directory. "
 echo "The docker-compose.yml file is generated based on your configuration"

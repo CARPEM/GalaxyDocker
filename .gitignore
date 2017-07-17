@@ -1,0 +1,15 @@
+#data-manager-hegp/analysisManager/analysismanager/GlobalVariables.py
+data-manager-hegp/analysisManager/analysismanager/analysismanager/settings.py
+data-manager-hegp/analysisManager/analysismanager/sequencer/GlobalVariables.py
+data-manager-hegp/analysisManager/analysismanager/sequencer/templates/sequencer/navigation_top.html
+data-manager-hegp/analysisManager/analysismanager/sequencer/templates/sequencer/plasma_Main.html
+data-manager-hegp/datamanagerpkg/datamanagerpkg/GlobalVariables.py
+docker-compose.yml
+dockertools2galaxy/tmpfile.xml
+images/inspectTest/inspect_samtools_idxstats.txt
+images/inspectTest/samtools_idxstats.tar
+images/multiInput/inspect_samtools_bedcov.txt
+images/multiInput/samtools_bedcov.tar
+tools/samtools_docker/samtools_bedcov/samtools_bedcov.xml
+tools/samtools_docker/samtools_idxstats/samtools_idxstats.xml
+

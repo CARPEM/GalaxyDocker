@@ -24,8 +24,8 @@ The following instructions will describe you what are the prerequisites,
 - Ubuntu 14.04
 - Kernel 3.13.0-79-generic (if not changed. Processes could generated 
   java defunc/Java zombie process)
-- [Docker](https://www.docker.io/gettingstarted/#h_installation)
-
+- [Docker version 1.12](https://www.docker.io/gettingstarted/#h_installation)
+- Docker-compose version 1.12
 This work was performed on a Linux server 
 with 4 core and 30giga of ram for development
 and 20 cores and 50 giga of ram for production
@@ -58,13 +58,13 @@ cd bin
 
 ```sh
 #to clean all configuration files 
-sh cleanAlldata.sh
+sudo sh cleanAlldata.sh
 #This script will build the image of two samtools galaxy tools and build the 
 #tool.xml file associated 
-sh 0_generatestoolconfig.sh
+sudo sh 0_generatestoolconfig.sh
 #This script will build the generate the configuration file needed to Galaxy 
 #and the Analysis Manager
-sh 1_GenerateConfiguration.sh
+sudo bash 1_GenerateConfiguration.sh
 ```
 *  Go back to the main folder with the command and build the project with 
 docker-compose. It will take a certain time.
@@ -84,7 +84,7 @@ docker-compose up -d
 docker-compose logs -f
 #if a new build is performed to clean tmp files generated go to bin and run
 cd bin
-sh cleanTmpdata.sh
+sudo sh cleanTmpdata.sh
 ```
 
 ## 2 : Tutorial
