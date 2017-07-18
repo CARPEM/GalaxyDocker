@@ -42,7 +42,7 @@ and 20 cores and 50 giga of ram for production
 -          6379:6379 - Redis server
 -          5432:5432 - Postgre Database
 
-## 1.C : Installation
+## 1.C : Configuration
 --------------------
 
 * All configuration files are located on the folder config. 
@@ -66,12 +66,16 @@ sudo sh 0_generatestoolconfig.sh
 #and the Analysis Manager
 sudo bash 1_GenerateConfiguration.sh
 ```
+
+## 1.D : Installation
+--------------------
+
 *  Go back to the main folder with the command and build the project with 
 docker-compose. It will take a certain time.
 
 ```sh
 cd ..
-docker-compose build
+sudo docker-compose build
 ```
 
 * Before you start Galaxy, be sure that all the port are open cf (FAQ 4.2).
@@ -79,9 +83,9 @@ and run them  all the containers with docker-compose.
 
 ```sh
 #Start all the containers
-docker-compose up -d
+sudo docker-compose up -d
 #To see the logs run
-docker-compose logs -f
+sudo docker-compose logs -f
 #if a new build is performed to clean tmp files generated go to bin and run
 cd bin
 sudo sh cleanTmpdata.sh
@@ -96,7 +100,7 @@ sudo sh cleanTmpdata.sh
 (a) Download the image biocontainers/samtools:1.3.1 with 
 
 ```sh
-docker pull biocontainers/samtools:1.3.1
+sudo docker pull biocontainers/samtools:1.3.1
 ```
 
 (b) Go to the folder images/inspectTest and look at the Dockerfile.
@@ -108,8 +112,8 @@ following command.
 
 ```sh
 cd images/inspectTest
-sh build_image.sh
-docker inspect samtools_idxstats
+sudo sh build_image.sh
+sudo docker inspect samtools_idxstats
 ```
 
 (c) In the folder dockertool2galaxy the python script will take as 
