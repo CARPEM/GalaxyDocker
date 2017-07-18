@@ -49,7 +49,7 @@ services:
      - "8800:8800" 
   regate:
     build:
-      context: regat
+      context: regate
     image: public-regate
     depends_on:
       - "database"
