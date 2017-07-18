@@ -38,5 +38,5 @@ rm ../images/multiInput/samtools_bedcov.tar
 rm ../tools/samtools_docker/samtools_idxstats/samtools_idxstats.xml
 rm ../tools/samtools_docker/samtools_bedcov/samtools_bedcov.xml
 rm ../tools/automatique/automatique.xml 
-rm  ../dockertools2galaxy/*xml
+rm ../dockertools2galaxy/*xml
 
