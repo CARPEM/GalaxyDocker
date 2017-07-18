@@ -5,6 +5,7 @@
 #delete files path with specific annotations
 rm ../data-manager-hegp/datamanagerpkg/datamanagerpkg/GlobalVariables.py
 rm ../data-manager-hegp/analysisManager/config/*
+touch ../data-manager-hegp/analysisManager/config/./notemptyfolder
 rm ../data-manager-hegp/analysisManager/analysismanager/sequencer/GlobalVariables.py
 rm ../data-manager-hegp/analysisManager/analysismanager/GlobalVariables.py
 #~ #######################
