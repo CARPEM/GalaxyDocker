@@ -313,3 +313,9 @@ wget https://apt.dockerproject.org/repo/pool/main/d/docker-engine/docker-engine_
 
 dpkg -i docker-engine_1.12.3-0~trusty_amd64.deb 
 rm docker-engine_1.12.3-0~trusty_amd64.deb 
+
+
+#### 5.3 :Install dockerècompose
+
+curl -L https://github.com/docker/compose/releases/download/1.12.0/docker-compose-`uname -s`-`uname -m` > docker-compose 
+sudo cp docker-compose /usr/local/bin/docker-compose

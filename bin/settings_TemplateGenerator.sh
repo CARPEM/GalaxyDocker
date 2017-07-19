@@ -72,8 +72,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 # CELERY
-BROKER_URL = 'redis://$DB_redis:$DB_redis_port'
-CELERY_RESULT_BACKEND = 'redis://$DB_redis:$DB_redis_port'
+BROKER_URL = 'redis://$DB_redis'
+CELERY_RESULT_BACKEND = 'redis://$DB_redis'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -129,7 +129,6 @@ DATABASES = {
         'USER': '$DB_USER',
         'PASSWORD': '$DB_password',
         'HOST': '$DB_server',
-        'PORT': $DB_port,
     }
 }
 

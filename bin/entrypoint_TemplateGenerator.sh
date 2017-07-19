@@ -22,20 +22,20 @@ python manage.py collectstatic --noinput  # Collect static files
 #Check postgres and construct
 #the analysismanager DB
 ############################
-until PGPASSWORD=$POSTGRES_PASSWORD psql -h "$DB_server" -p $DB_port  -d "postgres" -U "postgres" -c '\l'; do
+until PGPASSWORD=$POSTGRES_PASSWORD psql -h "$DB_server" -d "postgres" -U "postgres" -c '\l'; do
   >&2 echo "Postgres is unavailable - sleeping"
   sleep 10
 done
 >&2 echo "Postgres is up:  executing command to construct the DB"
 
-if PGPASSWORD=$POSTGRES_PASSWORD  psql  -h "$DB_server" -p $DB_port -d "postgres" -U "postgres" -lqt | cut -d \| -f 1 | grep -qw analysismanager; then
+if PGPASSWORD=$POSTGRES_PASSWORD  psql  -h "$DB_server" -d "postgres" -U "postgres" -lqt | cut -d \| -f 1 | grep -qw analysismanager; then
     >&2 echo "DATABASE ALREADY EXIST, ONLY UPDATE THE DATABASE"
     >&2 echo "Delete celery.pid files"
     # database exists
     # $? is 0
 else
-    PGPASSWORD=$POSTGRES_PASSWORD psql  -h "$DB_server" -p $DB_port -d "postgres" -U "postgres" -c """CREATE DATABASE analysismanager;"""
-    PGPASSWORD=$POSTGRES_PASSWORD psql  -h "$DB_server" -p $DB_port -d "postgres" -U "postgres" -c """CREATE USER analysismanageruser WITH PASSWORD 'analysismanager';ALTER ROLE analysismanageruser SET client_encoding TO 'utf8';ALTER ROLE analysismanageruser SET default_transaction_isolation TO 'read committed';GRANT ALL PRIVILEGES ON DATABASE analysismanager TO analysismanageruser;"""
+    PGPASSWORD=$POSTGRES_PASSWORD psql  -h "$DB_server" -d "postgres" -U "postgres" -c """CREATE DATABASE analysismanager;"""
+    PGPASSWORD=$POSTGRES_PASSWORD psql  -h "$DB_server" -d "postgres" -U "postgres" -c """CREATE USER analysismanageruser WITH PASSWORD 'analysismanager';ALTER ROLE analysismanageruser SET client_encoding TO 'utf8';ALTER ROLE analysismanageruser SET default_transaction_isolation TO 'read committed';GRANT ALL PRIVILEGES ON DATABASE analysismanager TO analysismanageruser;"""
     # ruh-roh
     # $? is 1
 ############################
