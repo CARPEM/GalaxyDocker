@@ -307,15 +307,66 @@ sudo update-grub
 sudo reboot
 ``` 
 
-#### 5.3 :Install docker
+#### 5.3 : Install docker
 
+
+```sh
 wget https://apt.dockerproject.org/repo/pool/main/d/docker-engine/docker-engine_1.12.3-0~trusty_amd64.deb 
-
 dpkg -i docker-engine_1.12.3-0~trusty_amd64.deb 
 rm docker-engine_1.12.3-0~trusty_amd64.deb 
+```
 
 
-#### 5.3 :Install dockerècompose
+#### 5.4 : Install docker-compose
 
+
+```sh
 curl -L https://github.com/docker/compose/releases/download/1.12.0/docker-compose-`uname -s`-`uname -m` > docker-compose 
 sudo cp docker-compose /usr/local/bin/docker-compose
+```
+
+#### 5.5 : Manage Docker as a non-root user
+
+Add the docker group if it doesn't already exist:
+
+```sh
+sudo groupadd docker
+```
+
+Add the connected user "$USER" to the docker group. Change the user name to match your preferred user if you do not want to use your current user:
+
+```sh
+sudo gpasswd -a $USER docker
+```
+
+Either do a newgrp docker or log out/in to activate the changes to groups.
+You can use
+
+```sh
+docker run hello-world
+```
+
+to check if you can run docker without sudo
+
+#### 5.6 : Folder mapping
+
+- bin : Contains the main template scripts to generate the Analysis manager
+- templates : contains some templates  needed by script in the bin folder
+- config : contains the main configuration files
+- data : Contains temporary files needed by the docker-compose generation
+- test_data : where are located the files needed by the AM
+- images : Contains template images for samtools used as masterial for the dockertools2galaxy tutorials
+- dockertools2galaxy : contains the scripts needed for the tools dockertools2galaxy
+- interactiveShiny : contains interactive shinyh environment used by Galaxy
+- tools : contains all the new Galaxy tools used by galaxy
+- regate : the regate docker configuration
+- data-manager-hegp : the data-manager and analysismanager main script
+- img : location of images used by this readme
+- logs : contains Analysis Manager logs
+
+
+
+
+
+
+

@@ -14,3 +14,5 @@ tools/samtools_docker/samtools_idxstats/samtools_idxstats.xml
 test_data/toyExample/bam/chrom1.txt
 test_data/toyExample/bam/mappedChromMito.txt
 test_data/*_NotCompleteDownloadFolder.txt
+./nas_genomes
+./nas_registry 
