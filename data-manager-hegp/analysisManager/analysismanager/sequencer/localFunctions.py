@@ -38,6 +38,7 @@ from GlobalVariables import  galaxy_base_url
 from GlobalVariables import  apiKey
 
 ##########################
+##########################
 #NAs DIr folder
 ##########################
 from GlobalVariables import nasInput
@@ -46,6 +47,7 @@ from GlobalVariables import plasmaFolderName
 from GlobalVariables import nasResults
 from GlobalVariables import workflowPath
 from GlobalVariables import toolsInformation
+from GlobalVariables import nasBackupFolder
 
 ##########################
 #SMTP folder
@@ -67,21 +69,22 @@ tools_default = ["ucsc_table_direct1","CONVERTER_wiggle_to_interval_0","MAF_To_B
 
 
 def sendmailwrapper(fromaddr,toaddr,subject,body) :
-    msg = MIMEMultipart()
-    msg['From'] = fromaddr
-    msg['To'] = toaddr
-    #~ msg['Subject'] = "SUBJECT OF THE EMAIL"
-    msg['Subject'] = subject  
-    #~ body = "TEXT YOU WANT TO SEND"
-    body = body
-    msg.attach(MIMEText(body, 'html'))
-    server = smtplib.SMTP(smtpServerAphp, smtpPortServer)
-    server.starttls()
-    #~ server.login(fromaddr, "YOUR PASSWORD")
-    text = msg.as_string()
-    server.sendmail(fromaddr, toaddr, text)
-    server.quit()
-    
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = fromaddr
+        msg['To'] = toaddr
+        #~ msg['Subject'] = "SUBJECT OF THE EMAIL"
+        msg['Subject'] = subject  
+        body = body
+        msg.attach(MIMEText(body, 'html'))
+        server = smtplib.SMTP(smtpServerAphp, smtpPortServer)
+        server.starttls()
+        text = msg.as_string()
+        server.sendmail(fromaddr, toaddr, text)
+        server.quit()
+    except Exception:
+        logger.info("##########################")    
+        logger.info("The smtp server is not avaiable please check your configuration")
 def Download_Data_clean():
     #here again controle the state of the object
     toDownloadsData=toDownloads.objects.all()
@@ -133,23 +136,32 @@ def buildSampleNameDict(folderName):
     #~ print(withoutAuto)
     withoutAutoTmp=withoutAuto.split('_')    
     cleanID=str("_".join(withoutAutoTmp[0:len(withoutAutoTmp)-1]))
-    resp = requests.get(sequencer_base_url+'/results/', auth=(sequencer_user,sequencer_password),params={"format": "json", "resultsName__endswith" : cleanID})
-    resp_json = resp.json()
-    #~ pprint(resp_json)
-    adress=sequencer_root_base_url+str(resp_json['objects'][0]['eas'])
-    #~ print 'this adress will be called to set up the sampleName'+adress
-    resp_eas = requests.get(adress, auth=(sequencer_user,sequencer_password),params={"format": "json"})
-    resp_eas_json = resp_eas.json()
-    #~ pprint(resp_eas_json)
     sampleNameDict=dict()
-    for thisSampleName in resp_eas_json['barcodedSamples']:
-        #~ print resp_eas_json['barcodedSamples'][thisSampleName]['barcodes']
-        if len(resp_eas_json['barcodedSamples'][thisSampleName]['barcodes'])==1:
-            sampleNameDict[resp_eas_json['barcodedSamples'][thisSampleName]['barcodes'][0]]=thisSampleName
-        else:
-            for ionTagElement in resp_eas_json['barcodedSamples'][thisSampleName]['barcodes'] :
-                sampleNameDict[ionTagElement]=thisSampleName
-                print "ionTagElement" +str(ionTagElement)
+    try :
+        resp = requests.get(sequencer_base_url+'/results/', auth=(sequencer_user,sequencer_password),params={"format": "json", "resultsName__endswith" : cleanID})
+        resp_json = resp.json()
+        #~ pprint(resp_json)
+        adress=sequencer_root_base_url+str(resp_json['objects'][0]['eas'])
+        #~ print 'this adress will be called to set up the sampleName'+adress
+        resp_eas = requests.get(adress, auth=(sequencer_user,sequencer_password),params={"format": "json"})
+        resp_eas_json = resp_eas.json()
+        #~ pprint(resp_eas_json)
+        for thisSampleName in resp_eas_json['barcodedSamples']:
+            #~ print resp_eas_json['barcodedSamples'][thisSampleName]['barcodes']
+            if len(resp_eas_json['barcodedSamples'][thisSampleName]['barcodes'])==1:
+                sampleNameDict[resp_eas_json['barcodedSamples'][thisSampleName]['barcodes'][0]]=thisSampleName
+            else:
+                for ionTagElement in resp_eas_json['barcodedSamples'][thisSampleName]['barcodes'] :
+                    sampleNameDict[ionTagElement]=thisSampleName
+                    print "ionTagElement" +str(ionTagElement)   
+    except requests.ConnectionError:
+        print("Data server not available")
+		
+    bagOfBams=[f for f in os.listdir(nasBackupFolder+"/"+folderName+"/bam") if "bam" in f]	
+    for fileBam in bagOfBams:
+        thisfile=fileBam.split('.')[0]
+        sampleNameDict[thisfile]=thisfile+'nomatchfromSequencer'
+        
     return(sampleNameDict)
 
 def buildBamDict(thisData):

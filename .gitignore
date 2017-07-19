@@ -11,4 +11,6 @@ images/multiInput/inspect_samtools_bedcov.txt
 images/multiInput/samtools_bedcov.tar
 tools/samtools_docker/samtools_bedcov/samtools_bedcov.xml
 tools/samtools_docker/samtools_idxstats/samtools_idxstats.xml
-
+test_data/toyExample/bam/chrom1.txt
+test_data/toyExample/bam/mappedChromMito.txt
+test_data/*_NotCompleteDownloadFolder.txt
