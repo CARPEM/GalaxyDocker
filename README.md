@@ -263,3 +263,53 @@ Finally update the Grub. and reboot your machine
 sudo update-grub
 sudo reboot
 ``` 
+
+
+## 5 : Requirements installation process
+--------------------
+
+
+#### 5.1 : Download a specific kernel version
+
+```sh
+#https://github.com/docker/docker/issues/18180
+#due to generation of zombie process need to change the java kernel 
+sudo apt-get update
+sudo apt-get install software-properties-common -y
+#sudo add-apt-repository ppa:chiluk/1533043
+sudo apt-get update
+sudo apt-get install -y linux-image-3.13.0-79-generic linux-image-extra-3.13.0-79-generic
+```
+
+#### 5.2 : Set “older” kernel as default grub entry from StakeOveflow
+
+```sh
+#https://github.com/docker/docker/issues/18180
+#due to generation of zombie process need to change the java kernel 
+sudo cp /etc/default/grub /etc/default/grub.bak
+```
+
+Then edit the file using the text editor of your choice (ie. gedit, etc.).
+
+```sh
+sudo gedit /etc/default/grub
+###examples:
+##kernel 4.2.2 --> 0
+#GRUB_DEFAULT="0"
+##Kernel 3.13.0.79 --> 1>2 (the one you want)
+GRUB_DEFAULT="1>2"
+```
+
+Finally update the Grub. and reboot your machine
+
+```sh
+sudo update-grub
+sudo reboot
+``` 
+
+#### 5.3 :Install docker
+
+wget https://apt.dockerproject.org/repo/pool/main/d/docker-engine/docker-engine_1.12.3-0~trusty_amd64.deb 
+
+dpkg -i docker-engine_1.12.3-0~trusty_amd64.deb 
+rm docker-engine_1.12.3-0~trusty_amd64.deb 
