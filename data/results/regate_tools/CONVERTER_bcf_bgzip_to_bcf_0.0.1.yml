@@ -1,0 +1,31 @@
+config_file: /galaxy-central/lib/galaxy/datatypes/converters/bcf_bgzip_to_bcf_converter.xml
+description: ''
+id: CONVERTER_bcf_bgzip_to_bcf
+inputs:
+- argument: null
+  edam_formats: [format_2333]
+  extensions: [bcf_bgzip]
+  help: ''
+  hidden: false
+  is_dynamic: false
+  label: Choose bcf_bgzip file
+  model_class: DataToolParameter
+  multiple: false
+  name: input1
+  optional: false
+  options:
+    hda: []
+    hdca: []
+  type: data
+labels: []
+link: /tool_runner?tool_id=CONVERTER_bcf_bgzip_to_bcf
+min_width: -1
+model_class: Tool
+name: Convert BCF_BGZIP to BCF
+outputs:
+- {edam_format: format_3020, format: bcf, hidden: false, label: '', model_class: ToolOutput,
+  name: output1}
+panel_section_id: null
+panel_section_name: null
+target: galaxy_main
+version: 0.0.1

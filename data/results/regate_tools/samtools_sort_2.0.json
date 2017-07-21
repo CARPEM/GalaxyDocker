@@ -1,0 +1,95 @@
+{
+    "accessibility": [
+        "Open access"
+    ], 
+    "topic": [
+        {
+            "term": "Topic", 
+            "uri": "http://edamontology.org/topic_0003"
+        }
+    ], 
+    "id": "samtools_sort", 
+    "platform": [
+        "Linux"
+    ], 
+    "version": "2.0", 
+    "homepage": "webgalaxy/tool_runner?tool_id=samtools_sort", 
+    "function": [
+        {
+            "output": [
+                {
+                    "dataHandle": "bam", 
+                    "dataDescription": "output1", 
+                    "data": {
+                        "term": "Sequence trace", 
+                        "uri": "http://edamontology.org/data_0924"
+                    }, 
+                    "format": [
+                        {
+                            "term": "BAM", 
+                            "uri": "http://edamontology.org/format_2572"
+                        }
+                    ]
+                }
+            ], 
+            "operation": [
+                {
+                    "term": "Operation", 
+                    "uri": "http://edamontology.org/operation_0004"
+                }
+            ], 
+            "functionHandle": "functionHandle", 
+            "functionDescription": "BAM dataset", 
+            "input": [
+                {
+                    "dataHandle": "input1", 
+                    "dataDescription": "BAM File", 
+                    "data": {
+                        "term": "Sequence trace", 
+                        "uri": "http://edamontology.org/data_0924"
+                    }, 
+                    "format": [
+                        {
+                            "term": "BAM", 
+                            "uri": "http://edamontology.org/format_2572"
+                        }
+                    ]
+                }
+            ]
+        }
+    ], 
+    "description": "BAM dataset.", 
+    "toolType": [
+        "Web application"
+    ], 
+    "collection": [
+        "toolsInformations"
+    ], 
+    "uses": [
+        {
+            "usesHomepage": "http://samtools_sort", 
+            "usesName": "Toolshed entry for \"samtools_sort\"", 
+            "usesVersion": "2.0"
+        }
+    ], 
+    "interface": [
+        {
+            "interfaceType": "Web UI"
+        }
+    ], 
+    "name": "samtools_sort", 
+    "resourceType": [
+        "Tool"
+    ], 
+    "maturity": "Mature", 
+    "versionID": "2.0", 
+    "contact": [
+        {
+            "email": "yourofficial@email.com", 
+            "name": "platformePRT"
+        }
+    ], 
+    "publications": {
+        "publicationsPrimaryID": "None"
+    }
+}

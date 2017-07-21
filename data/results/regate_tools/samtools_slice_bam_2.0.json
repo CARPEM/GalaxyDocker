@@ -1,0 +1,109 @@
+{
+    "accessibility": [
+        "Open access"
+    ], 
+    "topic": [
+        {
+            "term": "Topic", 
+            "uri": "http://edamontology.org/topic_0003"
+        }
+    ], 
+    "id": "samtools_slice_bam", 
+    "platform": [
+        "Linux"
+    ], 
+    "version": "2.0", 
+    "homepage": "webgalaxy/tool_runner?tool_id=samtools_slice_bam", 
+    "function": [
+        {
+            "output": [
+                {
+                    "dataHandle": "bam", 
+                    "dataDescription": "output_bam", 
+                    "data": {
+                        "term": "Sequence trace", 
+                        "uri": "http://edamontology.org/data_0924"
+                    }, 
+                    "format": [
+                        {
+                            "term": "BAM", 
+                            "uri": "http://edamontology.org/format_2572"
+                        }
+                    ]
+                }
+            ], 
+            "operation": [
+                {
+                    "term": "Operation", 
+                    "uri": "http://edamontology.org/operation_0004"
+                }
+            ], 
+            "functionHandle": "functionHandle", 
+            "functionDescription": "BAM by genomic regions", 
+            "input": [
+                {
+                    "dataHandle": "input_bam", 
+                    "dataDescription": "Select BAM dataset to slice", 
+                    "data": {
+                        "term": "Sequence trace", 
+                        "uri": "http://edamontology.org/data_0924"
+                    }, 
+                    "format": [
+                        {
+                            "term": "BAM", 
+                            "uri": "http://edamontology.org/format_2572"
+                        }
+                    ]
+                }, 
+                {
+                    "dataHandle": "input_interval", 
+                    "dataDescription": "BED file", 
+                    "data": {
+                        "term": "Annotation track", 
+                        "uri": "http://edamontology.org/data_3002"
+                    }, 
+                    "format": [
+                        {
+                            "term": "BED", 
+                            "uri": "http://edamontology.org/format_3003"
+                        }
+                    ]
+                }
+            ]
+        }
+    ], 
+    "description": "BAM by genomic regions.", 
+    "toolType": [
+        "Web application"
+    ], 
+    "collection": [
+        "toolsInformations"
+    ], 
+    "uses": [
+        {
+            "usesHomepage": "http://samtools_slice_bam", 
+            "usesName": "Toolshed entry for \"samtools_slice_bam\"", 
+            "usesVersion": "2.0"
+        }
+    ], 
+    "interface": [
+        {
+            "interfaceType": "Web UI"
+        }
+    ], 
+    "name": "samtools_slice_bam", 
+    "resourceType": [
+        "Tool"
+    ], 
+    "maturity": "Mature", 
+    "versionID": "2.0", 
+    "contact": [
+        {
+            "email": "yourofficial@email.com", 
+            "name": "platformePRT"
+        }
+    ], 
+    "publications": {
+        "publicationsPrimaryID": "None"
+    }
+}

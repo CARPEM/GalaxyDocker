@@ -1,0 +1,16 @@
+config_file: /galaxy-central/tools/automatique/automatique.xml
+description: Go to Analysis Manager
+id: AUTOMOTO
+inputs:
+- {argument: null, help: '', hidden: true, is_dynamic: false, label: '', model_class: BaseURLToolParameter,
+  name: GALAXY_URL, optional: false, type: baseurl, value: 'http://webgalaxy/tool_runner?tool_id=AUTOMOTO'}
+labels: []
+link: /tool_runner/data_source_redirect?tool_id=AUTOMOTO
+min_width: -1
+model_class: DataSourceTool
+name: automatic Analysis
+outputs: []
+panel_section_id: ANALYSEAUTO
+panel_section_name: Automatic Analysis
+target: _top
+version: 1.0.0

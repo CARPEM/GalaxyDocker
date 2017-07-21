@@ -1,0 +1,31 @@
+config_file: /galaxy-central/tools/samtools_docker/samtools_flagstat/samtools_flagstat.xml
+description: tabulate descriptive stats for BAM datset
+id: samtools_flagstat
+inputs:
+- argument: null
+  edam_formats: [format_2572]
+  extensions: [bam]
+  help: ''
+  hidden: false
+  is_dynamic: false
+  label: BAM File to Convert
+  model_class: DataToolParameter
+  multiple: false
+  name: input1
+  optional: false
+  options:
+    hda: []
+    hdca: []
+  type: data
+labels: []
+link: /tool_runner?tool_id=samtools_flagstat
+min_width: -1
+model_class: Tool
+name: Flagstat
+outputs:
+- {edam_format: format_2330, format: txt, hidden: false, label: '', model_class: ToolOutput,
+  name: output1}
+panel_section_id: samtoolsDevteam
+panel_section_name: ' Samtools'
+target: galaxy_main
+version: '2.0'

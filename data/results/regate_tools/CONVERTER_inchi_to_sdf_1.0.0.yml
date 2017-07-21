@@ -1,0 +1,31 @@
+config_file: /galaxy-central/lib/galaxy/datatypes/converters/inchi_to_sdf_converter.xml
+description: ''
+id: CONVERTER_inchi_to_sdf
+inputs:
+- argument: null
+  edam_formats: [format_3475]
+  extensions: [inchi]
+  help: ''
+  hidden: false
+  is_dynamic: false
+  label: Molecules in InChI format
+  model_class: DataToolParameter
+  multiple: false
+  name: input
+  optional: false
+  options:
+    hda: []
+    hdca: []
+  type: data
+labels: []
+link: /tool_runner?tool_id=CONVERTER_inchi_to_sdf
+min_width: -1
+model_class: Tool
+name: InChI to SDF
+outputs:
+- {edam_format: format_2330, format: sdf, hidden: false, label: '', model_class: ToolOutput,
+  name: output}
+panel_section_id: null
+panel_section_name: null
+target: galaxy_main
+version: 1.0.0

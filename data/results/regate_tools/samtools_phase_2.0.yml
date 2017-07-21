@@ -1,0 +1,82 @@
+config_file: /galaxy-central/tools/samtools_docker/samtools_phase/samtools_phase.xml
+description: heterozygous SNPs
+id: samtools_phase
+inputs:
+- argument: null
+  edam_formats: [format_2572]
+  extensions: [bam]
+  help: ''
+  hidden: false
+  is_dynamic: false
+  label: Select dataset to phase
+  model_class: DataToolParameter
+  multiple: false
+  name: input_bam
+  optional: false
+  options:
+    hda: []
+    hdca: []
+  type: data
+- cases:
+  - inputs: []
+    model_class: ConditionalWhen
+    value: default
+  - inputs:
+    - {area: false, argument: null, help: '', hidden: false, is_dynamic: false, label: Maximum
+        length for local phasing, max: null, min: null, model_class: IntegerToolParameter,
+      name: block_length, optional: false, size: null, type: integer, value: '13'}
+    - {area: false, argument: null, help: '', hidden: false, is_dynamic: false, label: Minimum
+        Phred-scaled level of detail to call a heterozygote, max: null, min: null,
+      model_class: IntegerToolParameter, name: min_het, optional: false, size: null,
+      type: integer, value: '37'}
+    - {area: false, argument: null, help: '', hidden: false, is_dynamic: false, label: Minimum
+        base quality to be used in het calling, max: null, min: null, model_class: IntegerToolParameter,
+      name: min_bq, optional: false, size: null, type: integer, value: '13'}
+    - {area: false, argument: null, help: '', hidden: false, is_dynamic: false, label: Read
+        depth, max: null, min: null, model_class: IntegerToolParameter, name: read_depth,
+      optional: false, size: null, type: integer, value: '256'}
+    - {argument: null, falsevalue: '', help: '', hidden: false, is_dynamic: false,
+      label: Do not attempt to fix chimeric reads, model_class: BooleanToolParameter,
+      name: ignore_chimeras, optional: false, truevalue: -F, type: boolean, value: false}
+    - {argument: null, falsevalue: '', help: '', hidden: false, is_dynamic: false,
+      label: Drop reads with ambiguous phase, model_class: BooleanToolParameter, name: drop_ambiguous,
+      optional: false, truevalue: -A 1, type: boolean, value: false}
+    model_class: ConditionalWhen
+    value: advanced
+  model_class: Conditional
+  name: option_set
+  test_param:
+    argument: null
+    display: null
+    help: ''
+    hidden: false
+    is_dynamic: false
+    label: Phase parameters
+    model_class: SelectToolParameter
+    multiple: false
+    name: option_sets
+    optional: false
+    options:
+    - [Use defaults, default, false]
+    - [Advanced options, advanced, false]
+    type: select
+    value: default
+  type: conditional
+labels: []
+link: /tool_runner?tool_id=samtools_phase
+min_width: -1
+model_class: Tool
+name: Call and phase
+outputs:
+- {edam_format: format_2330, format: txt, hidden: false, label: '', model_class: ToolOutput,
+  name: phase_sets}
+- {edam_format: format_2572, format: bam, hidden: false, label: '${tool.name} on ${on_string}:
+    Phase-0 reads', model_class: ToolOutput, name: phase0}
+- {edam_format: format_2572, format: bam, hidden: false, label: '${tool.name} on ${on_string}:
+    Phase-1 reads', model_class: ToolOutput, name: phase1}
+- {edam_format: format_2572, format: bam, hidden: false, label: '${tool.name} on ${on_string}:
+    Chimeric reads', model_class: ToolOutput, name: chimera}
+panel_section_id: samtoolsDevteam
+panel_section_name: ' Samtools'
+target: galaxy_main
+version: '2.0'

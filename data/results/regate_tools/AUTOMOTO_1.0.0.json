@@ -1,0 +1,63 @@
+{
+    "accessibility": [
+        "Open access"
+    ], 
+    "topic": [
+        {
+            "term": "Topic", 
+            "uri": "http://edamontology.org/topic_0003"
+        }
+    ], 
+    "id": "AUTOMOTO", 
+    "platform": [
+        "Linux"
+    ], 
+    "version": "1.0.0", 
+    "homepage": "webgalaxy/tool_runner?tool_id=AUTOMOTO", 
+    "function": [
+        {
+            "operation": [
+                {
+                    "term": "Operation", 
+                    "uri": "http://edamontology.org/operation_0004"
+                }
+            ], 
+            "functionHandle": "functionHandle", 
+            "functionDescription": "Go to Analysis Manager"
+        }
+    ], 
+    "description": "Go to Analysis Manager.", 
+    "toolType": [
+        "Web application"
+    ], 
+    "collection": [
+        "toolsInformations"
+    ], 
+    "uses": [
+        {
+            "usesHomepage": "http://AUTOMOTO", 
+            "usesName": "Toolshed entry for \"AUTOMOTO\"", 
+            "usesVersion": "1.0.0"
+        }
+    ], 
+    "interface": [
+        {
+            "interfaceType": "Web UI"
+        }
+    ], 
+    "name": "AUTOMOTO", 
+    "resourceType": [
+        "Tool"
+    ], 
+    "maturity": "Mature", 
+    "versionID": "1.0.0", 
+    "contact": [
+        {
+            "email": "yourofficial@email.com", 
+            "name": "platformePRT"
+        }
+    ], 
+    "publications": {
+        "publicationsPrimaryID": "None"
+    }
+}

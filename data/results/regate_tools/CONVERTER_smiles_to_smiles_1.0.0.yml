@@ -1,0 +1,49 @@
+config_file: /galaxy-central/lib/galaxy/datatypes/converters/smi_to_smi_converter.xml
+description: ''
+id: CONVERTER_smiles_to_smiles
+inputs:
+- argument: null
+  edam_formats: [format_3475]
+  extensions: [smi]
+  help: ''
+  hidden: false
+  is_dynamic: false
+  label: Molecules in SD-format
+  model_class: DataToolParameter
+  multiple: false
+  name: input
+  optional: false
+  options:
+    hda: []
+    hdca: []
+  type: data
+- {argument: null, falsevalue: '', help: '', hidden: false, is_dynamic: false, label: Do
+    not include isotopic or chiral markings (-xi), model_class: BooleanToolParameter,
+  name: iso_chi, optional: false, truevalue: i, type: boolean, value: false}
+- {argument: null, falsevalue: '', help: '', hidden: false, is_dynamic: false, label: Output
+    in canonical form (-xc), model_class: BooleanToolParameter, name: can, optional: false,
+  truevalue: c, type: boolean, value: false}
+- {argument: null, falsevalue: '', help: '', hidden: false, is_dynamic: false, label: Output
+    explicit hydrogens as such (-xh), model_class: BooleanToolParameter, name: exp_h,
+  optional: false, truevalue: h, type: boolean, value: false}
+- {argument: null, falsevalue: '', help: '', hidden: false, is_dynamic: false, label: Delete
+    hydrogen atoms (-d), model_class: BooleanToolParameter, name: remove_h, optional: false,
+  truevalue: -d, type: boolean, value: false}
+- {area: false, argument: null, help: -1 means deactivated, hidden: false, is_dynamic: false,
+  label: Add hydrogens appropriate for pH (-p), max: null, min: null, model_class: FloatToolParameter,
+  name: ph, optional: false, size: null, type: float, value: '-1'}
+- {argument: null, falsevalue: '', help: '', hidden: false, is_dynamic: false, label: 'Convert
+    dative bonds (e.g. [N+]([O-])=O to N(=O)=O) (-b)', model_class: BooleanToolParameter,
+  name: dative_bonds, optional: false, truevalue: -b, type: boolean, value: false}
+labels: []
+link: /tool_runner?tool_id=CONVERTER_smiles_to_smiles
+min_width: -1
+model_class: Tool
+name: SMILES to SMILES
+outputs:
+- {edam_format: format_3475, format: smi, hidden: false, label: '', model_class: ToolOutput,
+  name: output}
+panel_section_id: null
+panel_section_name: null
+target: galaxy_main
+version: 1.0.0

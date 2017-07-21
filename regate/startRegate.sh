@@ -8,8 +8,9 @@ do
   sleep 30
 done
 ls -l /results/galaxyReady.txt
-echo "in this version galaxy is not part of the docker compose we wait 40 seconds and will run the regate data generation"
+echo "We Wait 360 seconds  and will run the regate data generation"
 sleep 360
+echo "Start Regate"
 /usr/local/bin/regate --config_file /data/regate.ini
 touch /results/regateDone.txt
 

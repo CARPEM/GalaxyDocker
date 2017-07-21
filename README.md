@@ -196,7 +196,9 @@ sudo docker-compose build
 ```
 
 * Before you start Galaxy, be sure that all the port are open cf (FAQ 4.2).
-and run them  all the containers with docker-compose.
+and run them  all the containers with docker-compose. Please not that the whole process takes 
+arround Ten minutes to start. The regate container wait 5 minutes after the 
+launch of webgalaxy container. 
 
 ```sh
 #Start all the containers

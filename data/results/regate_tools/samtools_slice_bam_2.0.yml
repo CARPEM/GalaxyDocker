@@ -1,0 +1,121 @@
+config_file: /galaxy-central/tools/samtools_docker/samtools_slice_bam/samtools_slice_bam.xml
+description: BAM by genomic regions
+id: samtools_slice_bam
+inputs:
+- argument: null
+  edam_formats: [format_2572]
+  extensions: [bam]
+  help: ''
+  hidden: false
+  is_dynamic: false
+  label: Select BAM dataset to slice
+  model_class: DataToolParameter
+  multiple: false
+  name: input_bam
+  optional: false
+  options:
+    hda: []
+    hdca: []
+  type: data
+- cases:
+  - inputs:
+    - argument: null
+      edam_formats: [format_3003]
+      extensions: [bed]
+      help: BED datasets can be obtained using "Get Data -> UCSC Main" datasource.
+      hidden: false
+      is_dynamic: false
+      label: BED file
+      model_class: DataToolParameter
+      multiple: false
+      name: input_interval
+      optional: false
+      options:
+        hda: []
+        hdca: []
+      type: data
+    model_class: ConditionalWhen
+    value: bed
+  - inputs:
+    - argument: null
+      display: null
+      help: Click and type in the box above to see options. You can select multiple
+        entries. If "No options available" is displayed, you need to re-detect metadata
+        on the input dataset. See help section below.
+      hidden: false
+      is_dynamic: true
+      label: Select references (chromosomes and contigs) you would like to restrict
+        bam to
+      model_class: SelectToolParameter
+      multiple: true
+      name: refs
+      optional: false
+      options: []
+      type: select
+    model_class: ConditionalWhen
+    value: chr
+  - inputs:
+    - default: 1
+      help: null
+      inputs:
+      - argument: null
+        display: null
+        help: Select chromosome/contig from the list. If "No options available" is
+          displayed, you need to re-detect metadata on the input dataset. See help
+          section below.
+        hidden: false
+        is_dynamic: true
+        label: Select references (chromosomes and contigs) you would like to restrict
+          bam to
+        model_class: SelectToolParameter
+        multiple: false
+        name: chrom
+        optional: false
+        options: []
+        type: select
+      - {area: false, argument: null, help: '', hidden: false, is_dynamic: false,
+        label: Enter START coordinate (1-based), max: null, min: 1, model_class: IntegerToolParameter,
+        name: start, optional: false, size: null, type: integer, value: '0'}
+      - {area: false, argument: null, help: '', hidden: false, is_dynamic: false,
+        label: Enter END coordinate, max: null, min: 1, model_class: IntegerToolParameter,
+        name: end, optional: false, size: null, type: integer, value: '100'}
+      max: __Infinity__
+      min: 1
+      model_class: Repeat
+      name: regions
+      title: Regions
+      type: repeat
+    model_class: ConditionalWhen
+    value: man
+  model_class: Conditional
+  name: slice_method
+  test_param:
+    argument: null
+    display: null
+    help: ''
+    hidden: false
+    is_dynamic: false
+    label: How do you want to slice your dataset?
+    model_class: SelectToolParameter
+    multiple: false
+    name: slice_method_selector
+    optional: false
+    options:
+    - [using a list of intervals from a BED dataset, bed, false]
+    - [by chromosomes/contigs present in the BAM dataset, chr, false]
+    - [by chromosomes/contigs and coordinates, man, false]
+    type: select
+    value: bed
+  type: conditional
+labels: []
+link: /tool_runner?tool_id=samtools_slice_bam
+min_width: -1
+model_class: Tool
+name: Slice
+outputs:
+- {edam_format: format_2572, format: bam, hidden: false, label: '', model_class: ToolOutput,
+  name: output_bam}
+panel_section_id: samtoolsDevteam
+panel_section_name: ' Samtools'
+target: galaxy_main
+version: '2.0'

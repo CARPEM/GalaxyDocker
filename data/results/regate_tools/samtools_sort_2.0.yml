@@ -1,0 +1,46 @@
+config_file: /galaxy-central/tools/samtools_docker/samtools_sort/samtools_sort.xml
+description: BAM dataset
+id: samtools_sort
+inputs:
+- argument: null
+  edam_formats: [format_2572]
+  extensions: [bam]
+  help: ''
+  hidden: false
+  is_dynamic: false
+  label: BAM File
+  model_class: DataToolParameter
+  multiple: false
+  name: input1
+  optional: false
+  options:
+    hda: []
+    hdca: []
+  type: data
+- argument: null
+  display: null
+  help: ''
+  hidden: false
+  is_dynamic: false
+  label: 'Sort by '
+  model_class: SelectToolParameter
+  multiple: false
+  name: sort_mode
+  optional: false
+  options:
+  - [Chromosomal coordinates, '', true]
+  - [Read names (-n), -n, false]
+  type: select
+  value: ''
+labels: []
+link: /tool_runner?tool_id=samtools_sort
+min_width: -1
+model_class: Tool
+name: Sort
+outputs:
+- {edam_format: format_2572, format: bam, hidden: false, label: '', model_class: ToolOutput,
+  name: output1}
+panel_section_id: samtoolsDevteam
+panel_section_name: ' Samtools'
+target: galaxy_main
+version: '2.0'

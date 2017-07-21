@@ -24,8 +24,8 @@ cp ../config/configDataManager/GlobalVariables.py ../data-manager-hegp/analysisM
 #generate Templates for sequencer apps
 #######################
 #html
-sh navigationtop_TemplateGenerator.sh  $galaxy_base_url > ../data-manager-hegp/analysisManager/analysismanager/sequencer/templates/sequencer/navigation_top.html
-sh plasmamain_TemplateGenerator.sh  $galaxy_base_url > ../data-manager-hegp/analysisManager/analysismanager/sequencer/templates/sequencer/plasma_Main.html
+sh navigationtop_TemplateGenerator.sh  $galaxy_web_url > ../data-manager-hegp/analysisManager/analysismanager/sequencer/templates/sequencer/navigation_top.html
+sh plasmamain_TemplateGenerator.sh  $galaxy_web_url > ../data-manager-hegp/analysisManager/analysismanager/sequencer/templates/sequencer/plasma_Main.html
 cat ../templates/plasma_Main_endFile.html >> ../data-manager-hegp/analysisManager/analysismanager/sequencer/templates/sequencer/plasma_Main.html
 #settings.py
 sh settings_TemplateGenerator.sh  $analysisManagerAccessionAdress $DEBUG_AnalysisManager $DB_redis $DB_server $DB_port $DB_Name $DB_USER $DB_password $DB_redis_port> ../data-manager-hegp/analysisManager/analysismanager/analysismanager/settings.py

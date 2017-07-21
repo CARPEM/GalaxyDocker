@@ -1,0 +1,31 @@
+config_file: /galaxy-central/lib/galaxy/datatypes/converters/sdf_to_cml_converter.xml
+description: ''
+id: CONVERTER_sdf_to_cml
+inputs:
+- argument: null
+  edam_formats: [format_2330]
+  extensions: [sdf]
+  help: ''
+  hidden: false
+  is_dynamic: false
+  label: Molecules in SDF-format
+  model_class: DataToolParameter
+  multiple: false
+  name: input
+  optional: false
+  options:
+    hda: []
+    hdca: []
+  type: data
+labels: []
+link: /tool_runner?tool_id=CONVERTER_sdf_to_cml
+min_width: -1
+model_class: Tool
+name: SDF to CML
+outputs:
+- {edam_format: format_2332, format: cml, hidden: false, label: '', model_class: ToolOutput,
+  name: output}
+panel_section_id: null
+panel_section_name: null
+target: galaxy_main
+version: 1.0.0

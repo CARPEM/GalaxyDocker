@@ -1,0 +1,31 @@
+config_file: /galaxy-central/tools/samtools_docker/samtools_idxstats/samtools_idxstats.xml
+description: tabulate mapping statistics for BAM dataset
+id: samtools_idxstats
+inputs:
+- argument: null
+  edam_formats: [format_2572]
+  extensions: [bam]
+  help: ''
+  hidden: false
+  is_dynamic: false
+  label: BAM file
+  model_class: DataToolParameter
+  multiple: false
+  name: input
+  optional: false
+  options:
+    hda: []
+    hdca: []
+  type: data
+labels: []
+link: /tool_runner?tool_id=samtools_idxstats
+min_width: -1
+model_class: Tool
+name: IdxStats
+outputs:
+- {edam_format: format_3475, format: tabular, hidden: false, label: '${tool.name}
+    on ${on_string}', model_class: ToolOutput, name: output}
+panel_section_id: samtoolsDevteam
+panel_section_name: ' Samtools'
+target: galaxy_main
+version: '2.0'

@@ -1,0 +1,46 @@
+config_file: /galaxy-central/tools/samtools_docker/samtools_split/samtools_split.xml
+description: BAM dataset on readgroups
+id: samtools_split
+inputs:
+- argument: null
+  edam_formats: [format_2572]
+  extensions: [bam]
+  help: ''
+  hidden: false
+  is_dynamic: false
+  label: BAM file
+  model_class: DataToolParameter
+  multiple: false
+  name: input_bam
+  optional: false
+  options:
+    hda: []
+    hdca: []
+  type: data
+- argument: null
+  edam_formats: [format_2572, format_2573]
+  extensions: [bam, sam]
+  help: ''
+  hidden: false
+  is_dynamic: false
+  label: Replace header in output file
+  model_class: DataToolParameter
+  multiple: false
+  name: header
+  optional: true
+  options:
+    hda: []
+    hdca: []
+  type: data
+labels: []
+link: /tool_runner?tool_id=samtools_split
+min_width: -1
+model_class: Tool
+name: Split
+outputs:
+- {edam_format: format_2572, format: bam, hidden: false, label: '${tool.name} on ${on_string}',
+  model_class: ToolOutput, name: output}
+panel_section_id: samtoolsDevteam
+panel_section_name: ' Samtools'
+target: galaxy_main
+version: '1.1'

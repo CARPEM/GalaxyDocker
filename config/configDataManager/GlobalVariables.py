@@ -12,6 +12,7 @@ sequencer_ExperimentLimit=2
 #URL GALAXY
 ##########################
 #galaxydev
+galaxy_web_url='http://127.0.0.1:8123'
 galaxy_base_url='webgalaxy'
 apiKey="yourspecificmasterapikey"
 http_proxy=""

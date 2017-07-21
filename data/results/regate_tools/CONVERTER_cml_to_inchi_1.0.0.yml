@@ -1,0 +1,31 @@
+config_file: /galaxy-central/lib/galaxy/datatypes/converters/cml_to_inchi_converter.xml
+description: ''
+id: CONVERTER_cml_to_inchi
+inputs:
+- argument: null
+  edam_formats: [format_2332]
+  extensions: [cml]
+  help: ''
+  hidden: false
+  is_dynamic: false
+  label: Molecules in CML-format
+  model_class: DataToolParameter
+  multiple: false
+  name: input
+  optional: false
+  options:
+    hda: []
+    hdca: []
+  type: data
+labels: []
+link: /tool_runner?tool_id=CONVERTER_cml_to_inchi
+min_width: -1
+model_class: Tool
+name: CML to InChI
+outputs:
+- {edam_format: format_3475, format: inchi, hidden: false, label: '', model_class: ToolOutput,
+  name: output}
+panel_section_id: null
+panel_section_name: null
+target: galaxy_main
+version: 1.0.0

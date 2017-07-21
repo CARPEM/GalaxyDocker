@@ -1,0 +1,268 @@
+config_file: /galaxy-central/tools/samtools_docker/samtools_stats/samtools_stats.xml
+description: generate statistics for BAM dataset
+id: samtools_stats
+inputs:
+- argument: null
+  edam_formats: [format_2573, format_2572]
+  extensions: [sam, bam]
+  help: ''
+  hidden: false
+  is_dynamic: false
+  label: BAM file
+  model_class: DataToolParameter
+  multiple: false
+  name: input_file
+  optional: false
+  options:
+    hda: []
+    hdca: []
+  type: data
+- {area: false, argument: null, help: minimum coverage value for --coverage option,
+  hidden: false, is_dynamic: false, label: Minimum coverage, max: null, min: null,
+  model_class: IntegerToolParameter, name: coverage_min, optional: false, size: null,
+  type: integer, value: '1'}
+- {area: false, argument: null, help: maximum coverage value for --coverage option,
+  hidden: false, is_dynamic: false, label: Maximum coverage, max: null, min: null,
+  model_class: IntegerToolParameter, name: coverage_max, optional: false, size: null,
+  type: integer, value: '1000'}
+- {area: false, argument: null, help: step value for --coverage option, hidden: false,
+  is_dynamic: false, label: Coverage step, max: null, min: null, model_class: IntegerToolParameter,
+  name: coverage_step, optional: false, size: null, type: integer, value: '1'}
+- {argument: null, falsevalue: '', help: --remove-dups; default = False, hidden: false,
+  is_dynamic: false, label: Exclude reads marked as duplicates, model_class: BooleanToolParameter,
+  name: remove_dups, optional: false, truevalue: --remove-dups, type: boolean, value: false}
+- cases:
+  - inputs: []
+    model_class: ConditionalWhen
+    value: 'no'
+  - inputs:
+    - argument: null
+      display: checkboxes
+      help: ''
+      hidden: false
+      is_dynamic: false
+      label: Statistics to extract
+      model_class: SelectToolParameter
+      multiple: true
+      name: generate_tables
+      optional: true
+      options:
+      - [Summary numbers, sn, false]
+      - [First Fragment Qualities, ffq, false]
+      - [Last Fragment Qualities, lfq, false]
+      - [Mismatches per cycle, mpc, false]
+      - [GC Content of first fragments, gcf, false]
+      - [GC Content of last fragments, gcl, false]
+      - [ACGT content per cycle, gcc, false]
+      - [Insert sizes, is, false]
+      - [Read lengths, rl, false]
+      - [Indel distribution, id, false]
+      - [Indels per cycle, ic, false]
+      - [Coverage distribution, cov, false]
+      - [GC depth, gcd, false]
+      type: select
+      value: sn
+    model_class: ConditionalWhen
+    value: 'yes'
+  model_class: Conditional
+  name: split_output
+  test_param:
+    argument: null
+    display: null
+    help: Select between a single output or separate outputs for each statistics
+    hidden: false
+    is_dynamic: false
+    label: Output
+    model_class: SelectToolParameter
+    multiple: false
+    name: split_output_selector
+    optional: false
+    options:
+    - [a single summary file, 'no', true]
+    - [separate datasets for each statistics, 'yes', false]
+    type: select
+    value: 'no'
+  type: conditional
+- cases:
+  - inputs:
+    - argument: null
+      display: checkboxes
+      help: -f
+      hidden: false
+      is_dynamic: false
+      label: Require
+      model_class: SelectToolParameter
+      multiple: true
+      name: require_flags
+      optional: true
+      options:
+      - [Read is paired, '1', false]
+      - [Read is mapped in a proper pair, '2', false]
+      - [The read is unmapped, '4', false]
+      - [The mate is unmapped, '8', false]
+      - [Read strand, '16', false]
+      - [Mate strand, '32', false]
+      - [Read is the first in a pair, '64', false]
+      - [Read is the second in a pair, '128', false]
+      - [The alignment or this read is not primary, '256', false]
+      - [The read fails platform/vendor quality checks, '512', false]
+      - [The read is a PCR or optical duplicate, '1024', false]
+      type: select
+      value: '1'
+    - argument: null
+      display: checkboxes
+      help: -F
+      hidden: false
+      is_dynamic: false
+      label: Exclude
+      model_class: SelectToolParameter
+      multiple: true
+      name: exclude_flags
+      optional: true
+      options:
+      - [Read is paired, '1', false]
+      - [Read is mapped in a proper pair, '2', false]
+      - [The read is unmapped, '4', false]
+      - [The mate is unmapped, '8', false]
+      - [Read strand, '16', false]
+      - [Mate strand, '32', false]
+      - [Read is the first in a pair, '64', false]
+      - [Read is the second in a pair, '128', false]
+      - [The alignment or this read is not primary, '256', false]
+      - [The read fails platform/vendor quality checks, '512', false]
+      - [The read is a PCR or optical duplicate, '1024', false]
+      type: select
+      value: '1'
+    model_class: ConditionalWhen
+    value: filter
+  - inputs: []
+    model_class: ConditionalWhen
+    value: nofilter
+  model_class: Conditional
+  name: filter_by_flags
+  test_param:
+    argument: null
+    display: null
+    help: -f and -F options
+    hidden: false
+    is_dynamic: false
+    label: Set filter by flags
+    model_class: SelectToolParameter
+    multiple: false
+    name: filter_flags
+    optional: false
+    options:
+    - [Do not filter, nofilter, true]
+    - [Filter by flags to exclude or require, filter, false]
+    type: select
+    value: nofilter
+  type: conditional
+- {area: false, argument: null, help: --GC-depth; decreasing bin size increases memory
+    requirement; default = 20000.0, hidden: false, is_dynamic: false, label: GC-depth
+    bin size, max: null, min: null, model_class: FloatToolParameter, name: gc_depth,
+  optional: false, size: null, type: float, value: '20000'}
+- {area: false, argument: null, help: --insert-size; default = 8000, hidden: false,
+  is_dynamic: false, label: Maximum insert size, max: null, min: null, model_class: IntegerToolParameter,
+  name: insert_size, optional: false, size: null, type: integer, value: '8000'}
+- {area: false, argument: null, help: --read-length; default = no cutoff, hidden: false,
+  is_dynamic: false, label: Minimum read length to generate statistics for, max: null,
+  min: null, model_class: IntegerToolParameter, name: read_length, optional: false,
+  size: null, type: integer, value: '0'}
+- {area: false, argument: null, help: --most-inserts; default = 0.99, hidden: false,
+  is_dynamic: false, label: Report only the main part of inserts, max: null, min: null,
+  model_class: FloatToolParameter, name: most_inserts, optional: false, size: null,
+  type: float, value: '0.99'}
+- {area: false, argument: null, help: --trim-quality; default = 0, hidden: false,
+  is_dynamic: false, label: BWA trim parameter, max: null, min: null, model_class: IntegerToolParameter,
+  name: trim_quality, optional: false, size: null, type: integer, value: '0'}
+- cases:
+  - inputs:
+    - cases:
+      - inputs:
+        - argument: null
+          display: null
+          help: ''
+          hidden: false
+          is_dynamic: true
+          label: Using genome
+          model_class: SelectToolParameter
+          multiple: false
+          name: ref_file
+          optional: false
+          options: []
+          type: select
+        model_class: ConditionalWhen
+        value: cached
+      - inputs:
+        - argument: null
+          edam_formats: [format_1929]
+          extensions: [fasta]
+          help: ''
+          hidden: false
+          is_dynamic: false
+          label: Using file
+          model_class: DataToolParameter
+          multiple: false
+          name: ref_file
+          optional: false
+          options:
+            hda: []
+            hdca: []
+          type: data
+        model_class: ConditionalWhen
+        value: history
+      model_class: Conditional
+      name: reference_source
+      test_param:
+        argument: null
+        display: null
+        help: ''
+        hidden: false
+        is_dynamic: false
+        label: Choose a reference sequence for GC depth
+        model_class: SelectToolParameter
+        multiple: false
+        name: reference_source_selector
+        optional: false
+        options:
+        - [Locally cached, cached, false]
+        - [History, history, false]
+        type: select
+        value: cached
+      type: conditional
+    model_class: ConditionalWhen
+    value: 'yes'
+  - inputs: []
+    model_class: ConditionalWhen
+    value: 'no'
+  model_class: Conditional
+  name: use_reference
+  test_param:
+    argument: null
+    display: null
+    help: --ref-seq; required for GC-depth and mismatches-per-cycle calculation
+    hidden: false
+    is_dynamic: false
+    label: Use reference sequence
+    model_class: SelectToolParameter
+    multiple: false
+    name: use_ref_selector
+    optional: false
+    options:
+    - [Use reference, 'yes', false]
+    - [Do not use reference, 'no', true]
+    type: select
+    value: 'no'
+  type: conditional
+labels: []
+link: /tool_runner?tool_id=samtools_stats
+min_width: -1
+model_class: Tool
+name: Stats
+outputs:
+- {edam_format: format_3475, format: tabular, hidden: false, label: '${tool.name}
+    on ${on_string}', model_class: ToolOutput, name: output}
+panel_section_id: samtoolsDevteam
+panel_section_name: ' Samtools'
+target: galaxy_main
+version: '2.0'
