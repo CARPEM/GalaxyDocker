@@ -3,10 +3,11 @@
 ![Carpem](http://www.carpem.fr/wp-content/themes/carpem/img/logo.gif)![Docker](http://blog.cloudera.com/wp-content/uploads/2015/12/docker-logo.png)
 
 ### Table of content
-[Requirements](#requirements)
-[Automated installation](#autoinstall)
-[Using the platform](#usage)
-[(optional) manual installation](#manualinstall)
+
+* [Requirements](#requirements)
+* [Automated installation](#autoinstall)
+* [Using the platform](#usage)
+* [(optional) manual installation](#manualinstall)
 
 # Introduction
 This docker image was based on the [bgruening/docker-galaxy-stable:16.04](https://github.com/bgruening/docker-galaxy-stable)
