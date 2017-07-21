@@ -31,7 +31,7 @@ Required packages:
 - Docker-compose version 1.12
 
 
-#### Install docker
+### Install docker
 
 ```sh
 wget https://apt.dockerproject.org/repo/pool/main/d/docker-engine/docker-engine_1.12.3-0~trusty_amd64.deb 
@@ -39,14 +39,14 @@ dpkg -i docker-engine_1.12.3-0~trusty_amd64.deb
 rm docker-engine_1.12.3-0~trusty_amd64.deb 
 ```
 
-#### Install docker-compose
+### Install docker-compose
 
 ```sh
 curl -L https://github.com/docker/compose/releases/download/1.12.0/docker-compose-`uname -s`-`uname -m` > docker-compose 
 sudo cp docker-compose /usr/local/bin/docker-compose
 ```
 
-#### Manage Docker as a non-root user
+### Manage Docker as a non-root user
 
 Add the docker group if it does not already exist:
 
@@ -69,7 +69,7 @@ docker run hello-world
 
 to check if you can run docker without sudo
 
-#### Folder mapping
+### Folder mapping
 
 - bin : contains the main scripts generating the Analysis manager
 - templates : contains some templates needed by the scripts in the bin folder
@@ -85,8 +85,6 @@ to check if you can run docker without sudo
 - img : location of images used by this readme
 - logs : contains Analysis Manager logs
 
-
-
 ## Exposed Port
 --------------------
 
@@ -101,7 +99,7 @@ to check if you can run docker without sudo
 - 5432:5432 - Postgre Database
 
 
-### [Open Ports](#ports)
+### <a name="ports"></a>Open Ports
 
 Ubuntu 14.04 check port states
 ```sh
@@ -120,7 +118,7 @@ sudo ufw allow 8800
 sudo ufw allow 8021
 ```
 
-## Configuration
+## Required configuration
 --------------------
 
 * All configuration files are located on the folder config. 
@@ -182,7 +180,9 @@ cd bin
 sudo sh cleanTmpdata.sh
 ```
 
-## Manual installation
+# Optional section - Manual installation
+
+
 --------------------
 
 ### Build a galaxy xml with dockertools2galaxy
@@ -217,7 +217,7 @@ python dockertools2galaxy.py -i ../images/inspectTest/inspect_samtools_idxstats.
 python dockertools2galaxy.py -i ../images/multiInput/inspect_samtools_bedcov.txt -o ../tools/samtools_docker/samtools_bedcov/samtools_bedcov.xml
 ```
 
-#### Start Galaxy and the use the Analysis manager.
+### Start Galaxy and the use the Analysis manager.
 
 (a) Follow the Installation section to know how to run Galaxy and the Analysis
 manager. When the Galaxy Instance is ready, Register a new  Galaxy user in the login section
@@ -236,7 +236,7 @@ Our work is able to connect to an Ion Torrent sequencer.
 
 ![AM](img/AM.png)
 
-#### How to use a Shiny environnemt
+### How to use a Shiny environnemt
 
 (a) You need to be log in Galaxy.
 (b) Load a tabulate file and it will be available 
@@ -244,9 +244,12 @@ Our work is able to connect to an Ion Torrent sequencer.
 first time it will appear after 2 min the download of the docker image takes some times)*
 ![shiny](img/shiny.png)
 
-#### the sql command to obtain the same table
+### the sql command to obtain the same table
 
-PGPASSWORD=postgres psql  -h "yourservername" -p 5434 -d "analysismanager" -U "postgres"
+```sh
+PGPASSWORD=postgres
+psql  -h "yourservername" -p 5434 -d "analysismanager" -U "postgres"
+```
 
 ```sql
 -- first command
@@ -264,7 +267,7 @@ WHERE inpp.supportedfiles_id = supp.id;
 the table of the genome was obtain by parsing the file hegpGenomes.loc
 which contains our reference genome. it is the only file present on the tool_data_table_conf.xml.sample
 
-## [Change Linux Kernel](#kernelchange)
+## <a name="kernelchange"></a>Change Linux Kernel
 ### Download a specific kernel version
 
 ```sh
@@ -303,3 +306,26 @@ sudo update-grub
 sudo reboot
 ``` 
 
+
+## 3 : License
+--------------------
+
+This project is licensed under the MIT License
+ 
+The MIT License (MIT)
+Copyright (c) <2017> <APHP-HEGP>
+Permission is hereby granted, free of charge, to any person obtaining a copy of 
+this software and associated documentation files (the "Software"), to deal in 
+the Software without restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the
+Software, and to permit persons to whom the Software is furnished to do so, 
+subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all 
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ 
