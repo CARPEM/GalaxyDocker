@@ -1,5 +1,4 @@
 # GalaxyDockerPublic
---------------------
 
 ![Carpem](http://www.carpem.fr/wp-content/themes/carpem/img/logo.gif)![Docker](http://blog.cloudera.com/wp-content/uploads/2015/12/docker-logo.png)
 
@@ -18,17 +17,16 @@ This project uses 7 docker containers :
 The following instructions will describe the prerequisites, installation and the deployement of the system.
 
 ## Requirements
---------------------
-OS:
-- Recommanded: Ubuntu 14.04 64 bits
-- Kernel 3.13.0-79-generic (if not changed. Processes could generated 
-  java defunc/Java zombie process)
+
+- OS:
+    - Recommanded: Ubuntu 14.04 64 bits
+    - Kernel 3.13.0-79-generic (if not changed. Processes could generated java defunc/Java zombie process)
 
 The Kernel change is strongly recommended for production platform, not need for development purpose. Please see the [section kernel change](#kernelchange) for more information.
 
-Required packages:
-- [Docker version 1.12](https://www.docker.io/gettingstarted/#h_installation)
-- Docker-compose version 1.12
+- Required packages:
+    - [Docker version 1.12](https://www.docker.io/gettingstarted/#h_installation)
+    - Docker-compose version 1.12
 
 
 ### Install docker
@@ -86,20 +84,25 @@ to check if you can run docker without sudo
 - logs : contains Analysis Manager logs
 
 ## Exposed Port
---------------------
 
-### Port association
+### Docker port mapping association
 
-- 8123:80   -  Galaxy Web app
-- 9010:8000 - Analysismanager
-- 5005:5000 - local registry connection (not connected)
-- 8021:21   - transfert data  to galaxy via FTP protocol 
-- 8800:8800 - handle Galaxy Interactive Environments
-- 6379:6379 - Redis server
-- 5432:5432 - Postgre Database
+Ports reads as:
+```
+host port:docker port
+```
 
+Ports | Usage
+------|------
+8123:80   | Galaxy Web app
+9010:8000 | Analysismanager
+5005:5000 | local registry connection (not connected)
+8021:21   | transfert data  to galaxy via FTP protocol 
+8800:8800 | handle Galaxy Interactive Environments
+6379:6379 | Redis server
+5432:5432 | Postgre Database
 
-### <a name="ports"></a>Open Ports
+### <a name="ports"></a> Firewall ports opening
 
 Ubuntu 14.04 check port states
 ```sh
@@ -122,6 +125,7 @@ sudo ufw allow 8021
 --------------------
 
 * All configuration files are located on the folder config. 
+
 Start to edit the file 
 
 ```sh
@@ -160,12 +164,12 @@ cd ..
 sudo docker-compose build
 ```
 
-* Before you start Galaxy, be sure that all the port are open (cf the section related to the [port opening](#ports) or FAQ 4.2).
-
-Run them  all the containers with docker-compose.
+* Before you start Galaxy, be sure that all the port are open (cf. the section related to the [port opening](#ports)).
 
 Please note that the whole process takes around *ten minutes*. The regate container waits ***5 minutes*** after the 
 launch of *webgalaxy container*. 
+
+Run the application with:
 
 ```sh
 #Start all the containers
@@ -180,77 +184,44 @@ cd bin
 sudo sh cleanTmpdata.sh
 ```
 
-# Optional section - Manual installation
+# Using the platform
 
+## Start Galaxy and the use the Analysis manager.
 
---------------------
-
-### Build a galaxy xml with dockertools2galaxy
-
-
-(a) Download the image biocontainers/samtools:1.3.1 with 
-
-```sh
-sudo docker pull biocontainers/samtools:1.3.1
-```
-
-(b) Go to the folder images/inspectTest and look at the Dockerfile.
-We define some variables in order to directly generates the xml tool for
-Galaxy from define environment Variable inside the Docherfile. Follow the 
-instruction in the README.md file of dockertools2galaxy.
-To go further, we build the image and save the configuration to a file with the
-following command.
-
-```sh
-cd images/inspectTest
-sudo sh build_image.sh
-sudo docker inspect samtools_idxstats
-```
-
-(c) In the folder dockertool2galaxy the python script will take as 
-input the inspect.out and build a tool.xml file. Run the following command to perform 
-this operation.
-
-```sh
-cd dockertools2galaxy/
-python dockertools2galaxy.py -i ../images/inspectTest/inspect_samtools_idxstats.txt -o ../tools/samtools_docker/samtools_idxstats/samtools_idxstats.xml
-python dockertools2galaxy.py -i ../images/multiInput/inspect_samtools_bedcov.txt -o ../tools/samtools_docker/samtools_bedcov/samtools_bedcov.xml
-```
-
-### Start Galaxy and the use the Analysis manager.
-
-(a) Follow the Installation section to know how to run Galaxy and the Analysis
+1. Follow the Installation section to know how to run Galaxy and the Analysis
 manager. When the Galaxy Instance is ready, Register a new  Galaxy user in the login section
 
 ![LoginGalaxy](img/Galaxy_login.png)
 
-(b) To access the Analysis Manager in the tool panel performed a left click on the link
+2. To access the Analysis Manager in the tool panel performed a left click on the link
 *Automatic Analysis*. You will be send to the Analysis Manager interface. 
 *(It take 5 minutes more for the Analysis Manager to be ready.)*
 
 ![LoginTOAM](img/Galaxy_TOAM.png)
 
-(c) In the *Home page* you can directly run example. Just click on the start buttton.
+3. In the *Home page* you can directly run example. Just click on the start buttton.
 In the *Downloads page*, you can update the number and backup a specific run.
 Our work is able to connect to an Ion Torrent sequencer.
 
 ![AM](img/AM.png)
 
-### How to use a Shiny environnemt
+## How to use a Shiny environnemt
 
-(a) You need to be log in Galaxy.
-(b) Load a tabulate file and it will be available 
-(c) Make a left click on the *Vizualize" Button and select Shiny. *(The
+1. You need to be log in Galaxy.
+2. Load a tabulate file and it will be available 
+3. Make a left click on the *Vizualize" Button and select Shiny. *(The
 first time it will appear after 2 min the download of the docker image takes some times)*
 ![shiny](img/shiny.png)
 
-### the sql command to obtain the same table
+## Optaining the reproducibility logs
 
+Log into postgresl
 ```sh
 PGPASSWORD=postgres
 psql  -h "yourservername" -p 5434 -d "analysismanager" -U "postgres"
 ```
 
+Execute the following queries
 ```sql
 -- first command
 select  job_create_time, job_user_email_id,job_tool_id_id,job_params,job_inputs
@@ -267,6 +238,42 @@ WHERE inpp.supportedfiles_id = supp.id;
 the table of the genome was obtain by parsing the file hegpGenomes.loc
 which contains our reference genome. it is the only file present on the tool_data_table_conf.xml.sample
 
+
+# (Optional section) Manual installation
+
+## Build a galaxy xml with dockertools2galaxy
+
+
+1. Download the image biocontainers/samtools:1.3.1 with 
+
+```sh
+sudo docker pull biocontainers/samtools:1.3.1
+```
+
+2. Go to the folder images/inspectTest and look at the Dockerfile.
+We define some variables in order to directly generates the xml tool for
+Galaxy from define environment Variable inside the Docherfile. Follow the 
+instruction in the README.md file of dockertools2galaxy.
+To go further, we build the image and save the configuration to a file with the
+following command.
+
+```sh
+cd images/inspectTest
+sudo sh build_image.sh
+sudo docker inspect samtools_idxstats
+```
+
+3. In the folder dockertool2galaxy the python script will take as 
+input the inspect.out and build a tool.xml file. Run the following command to perform 
+this operation.
+
+```sh
+cd dockertools2galaxy/
+python dockertools2galaxy.py -i ../images/inspectTest/inspect_samtools_idxstats.txt -o ../tools/samtools_docker/samtools_idxstats/samtools_idxstats.xml
+python dockertools2galaxy.py -i ../images/multiInput/inspect_samtools_bedcov.txt -o ../tools/samtools_docker/samtools_bedcov/samtools_bedcov.xml
+```
+
+# Technical considerations
 ## <a name="kernelchange"></a>Change Linux Kernel
 ### Download a specific kernel version
 
@@ -305,27 +312,3 @@ Finally update Grub and reboot your server/machine
 sudo update-grub
 sudo reboot
 ``` 
-
-
-## 3 : License
---------------------
-
-This project is licensed under the MIT License
- 
-The MIT License (MIT)
-Copyright (c) <2017> <APHP-HEGP>
-Permission is hereby granted, free of charge, to any person obtaining a copy of 
-this software and associated documentation files (the "Software"), to deal in 
-the Software without restriction, including without limitation the rights to use,
-copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the
-Software, and to permit persons to whom the Software is furnished to do so, 
-subject to the following conditions:
-The above copyright notice and this permission notice shall be included in all 
-copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
-PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- 
