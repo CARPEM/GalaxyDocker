@@ -2,6 +2,13 @@
 
 ![Carpem](http://www.carpem.fr/wp-content/themes/carpem/img/logo.gif)![Docker](http://blog.cloudera.com/wp-content/uploads/2015/12/docker-logo.png)
 
+### Table of content
+[Requirements](#requirements)
+[Automated installation](#autoinstall)
+[Using the platform](#usage)
+[(optional) manual installation](#manualinstall)
+
+# Introduction
 This docker image was based on the [bgruening/docker-galaxy-stable:16.04](https://github.com/bgruening/docker-galaxy-stable)
 and was developed for the [European Hospital Georges Pompidou](http://hopital-georgespompidou.aphp.fr/) (HEGP). This project is based on docker-compose and on the *docker in docker* deployment facility.
 
@@ -16,7 +23,7 @@ This project uses 7 docker containers :
 
 The following instructions will describe the prerequisites, installation and the deployement of the system.
 
-## Requirements
+## <a name="requirements"></a>Requirements
 
 - OS:
     - Recommanded: Ubuntu 14.04 64 bits
@@ -121,8 +128,8 @@ sudo ufw allow 8800
 sudo ufw allow 8021
 ```
 
-## Required configuration
---------------------
+# <a name="autoinstall"></a> Automated installation
+## Local configuration
 
 * All configuration files are located on the folder config. 
 
@@ -153,8 +160,7 @@ sudo sh 0_generatestoolconfig.sh
 sudo bash 1_GenerateConfiguration.sh
 ```
 
-## Automated installation
---------------------
+## Generating the containers
 
 *  Go back to the main folder with the command and build the project with 
 docker-compose. It will take a certain time.
@@ -163,6 +169,8 @@ docker-compose. It will take a certain time.
 cd ..
 sudo docker-compose build
 ```
+
+## Starting the system
 
 * Before you start Galaxy, be sure that all the port are open (cf. the section related to the [port opening](#ports)).
 
@@ -184,7 +192,7 @@ cd bin
 sudo sh cleanTmpdata.sh
 ```
 
-# Using the platform
+# <a name="usage"></a> Using the platform
 
 ## Start Galaxy and the use the Analysis manager.
 
@@ -239,7 +247,7 @@ the table of the genome was obtain by parsing the file hegpGenomes.loc
 which contains our reference genome. it is the only file present on the tool_data_table_conf.xml.sample
 
 
-# (Optional section) Manual installation
+# <a name="manualinstall"></a>(Optional section) Manual installation
 
 ## Build a galaxy xml with dockertools2galaxy
 
