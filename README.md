@@ -4,72 +4,34 @@
 ![Carpem](http://www.carpem.fr/wp-content/themes/carpem/img/logo.gif)![Docker](http://blog.cloudera.com/wp-content/uploads/2015/12/docker-logo.png)
 
 This docker image was based on the [bgruening/docker-galaxy-stable:16.04](https://github.com/bgruening/docker-galaxy-stable)
-and was developed for HEGP. This project is based on docker-compose and on the
-docker in docker deployment facility. 
-This project used 7 docker containers :
-- Galaxy : A web interface for NGS analysis
-- DataManager/analysisManager a web interface to faciliate an automatize NGS analysis
-- Database (Postgre) which contains the analysis manager database
-- Regate : to generate EDAM ontology
-- Redis server : use by the analysis manager to generate cron job
+and was developed for the [European Hospital Georges Pompidou](http://hopital-georgespompidou.aphp.fr/) (HEGP). This project is based on docker-compose and on the *docker in docker* deployment facility.
+
+This project uses 7 docker containers :
+- Galaxy: A bioinformatics analysis management platform, managing tools and pipelines
+- DataManager/analysisManager: a web interface to faciliate an automatized NGS analysis
+- PostgreSQL: A database that contains the analysis manager database
+- ReGaTE: to generate the annotation of tools using the EDAM ontology
+- Redis server: used by the analysis manager to generate cron job
 - DockerTools2Galaxy: to generate galaxy xml file from a docker image.
  
 
-The following instructions will describe you what are the prerequisites,
- how to install the project and how to run it.
+The following instructions will describe the prerequisites, installation and the deployement of the system.
 
-## 1.A :  Requirements
+## Requirements
 --------------------
-This work was performed on a Linux server 
-with 4 core and 30giga of ram for development
-and 20 cores and 50 giga of ram for production
-
-- Ubuntu 14.04 64 bits
+OS:
+- Recommanded: Ubuntu 14.04 64 bits
 - Kernel 3.13.0-79-generic (if not changed. Processes could generated 
   java defunc/Java zombie process)
+
+The Kernel change is strongly recommended for production platform, not need for development purpose. Please see the [section kernel change](#kernelchange) for more information.
+
+Required packages:
 - [Docker version 1.12](https://www.docker.io/gettingstarted/#h_installation)
 - Docker-compose version 1.12
 
-#### 1.A.1 : Download a specific kernel version
 
-```sh
-#https://github.com/docker/docker/issues/18180
-#due to generation of zombie process need to change the java kernel 
-sudo apt-get update
-sudo apt-get install software-properties-common -y
-#sudo add-apt-repository ppa:chiluk/1533043
-sudo apt-get update
-sudo apt-get install -y linux-image-3.13.0-79-generic linux-image-extra-3.13.0-79-generic
-```
-
-#### 1.A.2 : Set “older” kernel as default grub entry from StakeOveflow
-
-```sh
-#https://github.com/docker/docker/issues/18180
-#due to generation of zombie process need to change the java kernel 
-sudo cp /etc/default/grub /etc/default/grub.bak
-```
-
-Then edit the file using the text editor of your choice (ie. gedit, etc.).
-
-```sh
-sudo gedit /etc/default/grub
-###examples:
-##kernel 4.2.2 --> 0
-#GRUB_DEFAULT="0"
-##Kernel 3.13.0.79 --> 1>2 (the one you want)
-GRUB_DEFAULT="1>2"
-```
-
-Finally update the Grub. and reboot your machine
-
-```sh
-sudo update-grub
-sudo reboot
-``` 
-
-#### 1.A.3 : Install docker
-
+#### Install docker
 
 ```sh
 wget https://apt.dockerproject.org/repo/pool/main/d/docker-engine/docker-engine_1.12.3-0~trusty_amd64.deb 
@@ -77,18 +39,16 @@ dpkg -i docker-engine_1.12.3-0~trusty_amd64.deb
 rm docker-engine_1.12.3-0~trusty_amd64.deb 
 ```
 
-
-#### 1.A.4 : Install docker-compose
-
+#### Install docker-compose
 
 ```sh
 curl -L https://github.com/docker/compose/releases/download/1.12.0/docker-compose-`uname -s`-`uname -m` > docker-compose 
 sudo cp docker-compose /usr/local/bin/docker-compose
 ```
 
-#### 1.A.5 : Manage Docker as a non-root user
+#### Manage Docker as a non-root user
 
-Add the docker group if it doesn't already exist:
+Add the docker group if it does not already exist:
 
 ```sh
 sudo groupadd docker
@@ -109,28 +69,28 @@ docker run hello-world
 
 to check if you can run docker without sudo
 
-#### 1.A.6 : Folder mapping
+#### Folder mapping
 
-- bin : Contains the main template scripts to generate the Analysis manager
-- templates : contains some templates  needed by script in the bin folder
+- bin : contains the main scripts generating the Analysis manager
+- templates : contains some templates needed by the scripts in the bin folder
 - config : contains the main configuration files
-- data : Contains temporary files needed by the docker-compose generation
-- test_data : where are located the files needed by the AM
-- images : Contains template images for samtools used as masterial for the dockertools2galaxy tutorials
-- dockertools2galaxy : contains the scripts needed for the tools dockertools2galaxy
-- interactiveShiny : contains interactive shinyh environment used by Galaxy
-- tools : contains all the new Galaxy tools used by galaxy
-- regate : the regate docker configuration
+- data : contains temporary files needed for the docker-compose generation
+- test_data : contains the files needed by the AnalysisManager
+- images : contains template images for samtools used as material for the dockertools2galaxy tutorials
+- dockertools2galaxy : contains the scripts needed for the tool dockertools2galaxy
+- interactiveShiny : contains interactive shiny environment used by Galaxy
+- tools : contains the tools used by Galaxy
+- ReGaTE : the regate docker configuration files
 - data-manager-hegp : the data-manager and analysismanager main script
 - img : location of images used by this readme
 - logs : contains Analysis Manager logs
 
 
 
-## 1.B Exposed Port Explaination
+## Exposed Port
 --------------------
 
-#### 1.B.1 : Port Explaination
+### Port association
 
 - 8123:80   -  Galaxy Web app
 - 9010:8000 - Analysismanager
@@ -141,7 +101,7 @@ to check if you can run docker without sudo
 - 5432:5432 - Postgre Database
 
 
-#### 1.B.2 : Open Port 
+### [Open Ports](#ports)
 
 Ubuntu 14.04 check port states
 ```sh
@@ -154,23 +114,30 @@ Open Galaxy ports
 sudo ufw allow 5432 
 sudo ufw allow 9010
 sudo ufw allow 8123
+sudo ufw allow 5005
+sudo ufw allow 6379
+sudo ufw allow 8800
+sudo ufw allow 8021
 ```
 
-Do the same for all the following ports
-#5005 6379 8800 8021
-
-## 1.C : Configuration
+## Configuration
 --------------------
 
 * All configuration files are located on the folder config. 
-Start to edit the file **config/configDataManager/GlobalVariables.py**
+Start to edit the file 
+
+```sh
+vi ./config/configDataManager/GlobalVariables.py
+```
 and define all the main variables such as *http_proxy* and the *serverName*
+
 * Go to the folder bin. It contains all the templates file Generator to 
 automatize and faciliate as much as possible the Analysis Manager Deployment.
 
 ```sh
 cd bin
 ```
+
 * Run the following scripts
 
 ```sh
@@ -184,7 +151,7 @@ sudo sh 0_generatestoolconfig.sh
 sudo bash 1_GenerateConfiguration.sh
 ```
 
-## 1.D : Installation
+## Automated installation
 --------------------
 
 *  Go back to the main folder with the command and build the project with 
@@ -195,10 +162,12 @@ cd ..
 sudo docker-compose build
 ```
 
-* Before you start Galaxy, be sure that all the port are open cf (FAQ 4.2).
-and run them  all the containers with docker-compose. Please not that the whole process takes 
-arround Ten minutes to start. The regate container wait 5 minutes after the 
-launch of webgalaxy container. 
+* Before you start Galaxy, be sure that all the port are open (cf the section related to the [port opening](#ports) or FAQ 4.2).
+
+Run them  all the containers with docker-compose.
+
+Please note that the whole process takes around *ten minutes*. The regate container waits ***5 minutes*** after the 
+launch of *webgalaxy container*. 
 
 ```sh
 #Start all the containers
@@ -213,10 +182,10 @@ cd bin
 sudo sh cleanTmpdata.sh
 ```
 
-## 2 : Tutorial
+## Manual installation
 --------------------
 
-#### 2.1 : Build a galaxy xml with dockertools2galaxy
+### Build a galaxy xml with dockertools2galaxy
 
 
 (a) Download the image biocontainers/samtools:1.3.1 with 
@@ -248,7 +217,7 @@ python dockertools2galaxy.py -i ../images/inspectTest/inspect_samtools_idxstats.
 python dockertools2galaxy.py -i ../images/multiInput/inspect_samtools_bedcov.txt -o ../tools/samtools_docker/samtools_bedcov/samtools_bedcov.xml
 ```
 
-#### 2.2 : Start Galaxy and the use the Analysis manager.
+#### Start Galaxy and the use the Analysis manager.
 
 (a) Follow the Installation section to know how to run Galaxy and the Analysis
 manager. When the Galaxy Instance is ready, Register a new  Galaxy user in the login section
@@ -267,7 +236,7 @@ Our work is able to connect to an Ion Torrent sequencer.
 
 ![AM](img/AM.png)
 
-#### 2.3 : How to use a Shiny environnemt
+#### How to use a Shiny environnemt
 
 (a) You need to be log in Galaxy.
 (b) Load a tabulate file and it will be available 
@@ -275,7 +244,7 @@ Our work is able to connect to an Ion Torrent sequencer.
 first time it will appear after 2 min the download of the docker image takes some times)*
 ![shiny](img/shiny.png)
 
-#### 2.4 : the sql command to obtain the same table
+#### the sql command to obtain the same table
 
 PGPASSWORD=postgres psql  -h "yourservername" -p 5434 -d "analysismanager" -U "postgres"
 
@@ -294,6 +263,46 @@ WHERE inpp.supportedfiles_id = supp.id;
 
 the table of the genome was obtain by parsing the file hegpGenomes.loc
 which contains our reference genome. it is the only file present on the tool_data_table_conf.xml.sample
+
+## [Change Linux Kernel](#kernelchange)
+### Download a specific kernel version
+
+```sh
+#https://github.com/docker/docker/issues/18180
+#due to generation of zombie process need to change the java kernel 
+sudo apt-get update
+sudo apt-get install software-properties-common -y
+#sudo add-apt-repository ppa:chiluk/1533043
+sudo apt-get update
+sudo apt-get install -y linux-image-3.13.0-79-generic linux-image-extra-3.13.0-79-generic
+```
+
+### Set an “older” kernel as default grub entry (source: StakeOveflow)
+
+```sh
+#https://github.com/docker/docker/issues/18180
+#due to generation of zombie process need to change the java kernel 
+sudo cp /etc/default/grub /etc/default/grub.bak
+```
+
+Then edit the file using the text editor of your choice (ie. gedit, etc.).
+
+```sh
+sudo gedit /etc/default/grub
+###examples:
+##kernel 4.2.2 --> 0
+#GRUB_DEFAULT="0"
+##Kernel 3.13.0.79 --> 1>2 (the one you want)
+GRUB_DEFAULT="1>2"
+```
+
+Finally update Grub and reboot your server/machine
+
+```sh
+sudo update-grub
+sudo reboot
+``` 
+
 
 ## 3 : License
 --------------------
