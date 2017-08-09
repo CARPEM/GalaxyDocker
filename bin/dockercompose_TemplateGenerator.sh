@@ -20,11 +20,11 @@ DB_redis_port=$14
 cat  << EOF
 version: '2'
 services:
-  redis:
+  redisam:
     image: "redis:alpine"   
     ports:
      - "$DB_redis_port:6379"   
-  database:
+  amdatabase:
     image: "postgres:9.3"   
     ports:
      - "$DB_port:5432"   
