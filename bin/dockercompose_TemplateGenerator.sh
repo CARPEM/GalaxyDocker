@@ -64,7 +64,7 @@ services:
         - https_proxy=$https_proxy         
     image: public-regate
     depends_on:
-      - "database"
+      - "amdatabase"
       - "webgalaxy"
     environment:
      - http_proxy=$http_proxy
@@ -87,7 +87,7 @@ services:
         - https_proxy=$https_proxy          
     image: public-analysismanager
     depends_on:
-      - "database"
+      - "amdatabase"
       - "regate"
     environment:
      - http_proxy=$http_proxy
