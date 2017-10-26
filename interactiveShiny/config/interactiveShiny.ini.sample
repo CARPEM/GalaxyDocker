@@ -19,6 +19,7 @@ password_auth = True
 
 # The docker image name that should be started.
 image = rocker/shiny
+
 # Additional arguments that are passed to the `docker run` command.
 #command_inject = --sig-proxy=true -e DEBUG=false
 

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE interactive_environment SYSTEM "../../interactive_environments.dtd">
-<interactive_environment name="Shiny">
+<interactive_environment name="Shiny"><!--The button name of your app -->
     <data_sources>
         <data_source>
-            <model_class>HistoryDatasetAssociation</model_class>
+            <model_class>HistoryDatasetAssociation</model_class><!--The data for which your shiny app will open -->
             <test type="isinstance" test_attr="datatype" result_type="datatype">tabular.Tabular</test>
             <test type="isinstance" test_attr="datatype" result_type="datatype">data.Text</test>
             <test type="isinstance" test_attr="datatype" result_type="datatype">binary.RData</test>            

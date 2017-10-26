@@ -158,7 +158,7 @@ sudo sh cleanAlldata.sh
 sudo sh 0_generatestoolconfig.sh
 #This script will build the generate the configuration file needed to Galaxy 
 #and the Analysis Manager
-sudo bash 1_GenerateConfiguration.sh
+sudo bash 1_generatesConfigurations.sh
 ```
 
 ## Generating the containers
@@ -214,13 +214,60 @@ Our work is able to connect to an Ion Torrent sequencer.
 
 ![AM](img/AM.png)
 
-## How to use a Shiny environnemt
+## How to use a Shiny environment
 
 1. You need to be log in Galaxy.
 2. Load a tabulate file and it will be available 
 3. Make a left click on the *Vizualize" Button and select Shiny. *(The
 first time it will appear after 2 min the download of the docker image takes some times)*
 ![shiny](img/shiny.png)
+
+## How to install a Shiny environment
+
+The Shiny environment is Dockerised and come from the rocker/shiny image
+
+1. Copy the folder interactiveShiny in the folder /galaxy-central/config/plugins/interactive_environments/.
+   Inside the config folder you can found :
+2. interactiveShiny.ini.sample : where you define the dockerized Shiny app that you want to use. Here we use for demonstration
+  purpose the rocker/shiny image. We suggest you to use this image as base for your Shiny App.
+  Furthermore, this image need to be reachable from the Galaxy container.
+3. interactiveShiny.xml: In this file you define for which input your Shiny environment will be available.
+
+```xml
+<!DOCTYPE interactive_environment SYSTEM "../../interactive_environments.dtd">
+<interactive_environment name="Shiny"><!--The button name of your app -->
+    <data_sources>
+        <data_source>
+            <model_class>HistoryDatasetAssociation</model_class><!--The data for which your Shiny app will open -->
+            <test type="isinstance" test_attr="datatype" result_type="datatype">tabular.Tabular</test>
+            <test type="isinstance" test_attr="datatype" result_type="datatype">data.Text</test>
+            <test type="isinstance" test_attr="datatype" result_type="datatype">binary.RData</test>
+            <to_param param_attr="id">dataset_id</to_param>
+        </data_source>
+    </data_sources>
+    <params>
+        <param type="dataset" var_name_in_template="hda" required="true">dataset_id</param>
+    </params>
+    <template>interactiveShiny.mako</template><!--The template use to start your app -->
+</interactive_environment>
+
+```
+
+
+4. In the templates folder, interactiveShiny.mako you define how the data are mounted inside your Shiny app.
+
+```sh
+
+CNVdata = ie_request.volume(hda.file_name, '/srv/shiny-server/data/inputdata.txt', how='ro')
+
+```
+
+5. To finish you need to add a cron job [docker-cron]( https://github.com/cheyer/docker-cron.git) to your
+Galaxy container in order to preserve your resources. The Shiny app is not fully recognize by Galaxy and need to be clean as reported by ValentinChCloud. He proposed to use
+ is [Shiny app](https://github.com/ValentinChCloud/shiny-GIE) which will exited the container after 60 secondes of inactivity.
+  We wanted to add also a cron job to delete containers which are still present, until a better solution is found.
+You need to provide both the app name and the duration of the app. In our cases the Shiny app is killed after 300 seconds
+of activity.
 
 ## Optaining the reproducibility logs
 
