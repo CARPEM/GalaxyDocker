@@ -1,4 +1,4 @@
-FROM bgruening/galaxy-stable:16.04
+FROM bgruening/galaxy-stable:19.0119
 MAINTAINER  William Digan william.digan@aphp.fr, Hector Countouris  hector.countouris@aphp.fr 
 
 ########################
